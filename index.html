@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff">
+<title>늘새복</title>
+<link rel="icon" href="./web/icon.png">
+<link rel="apple-touch-icon" href="./web/icon.png">
+<link rel="stylesheet" href="./web/style.css">
+<script defer src="./web/app.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="brand" href="#home"><img src="./web/icon.png" alt="">늘새복</a>
+    <div class="header-actions">
+      <a class="login-link" href="#login">로그인하기</a>
+      <a class="settings-link" href="#settings" aria-label="설정"><span class="icon" data-icon="settings" aria-hidden="true"></span></a>
+    </div>
+  </div>
+</header>
+<main id="app" tabindex="-1"></main>
+<nav class="tabs" aria-label="주 메뉴" hidden>
+  <div class="tabs-inner">
+    <a href="#home"><span class="tab-icon"><span class="icon" data-icon="home" aria-hidden="true"></span></span>홈</a>
+    <a href="#bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>주보</a>
+    <a href="#worship"><span class="tab-icon"><span class="icon" data-icon="worship" aria-hidden="true"></span></span>예배</a>
+    <a href="#devotion"><span class="tab-icon"><span class="icon" data-icon="word" aria-hidden="true"></span></span>말씀</a>
+  </div>
+</nav>
+<template id="entry">
+  <div class="welcome">
+    <section class="entry-card" aria-labelledby="entry-heading">
+      <img class="chapel-art" src="./web/chapel.webp" alt="" fetchpriority="high">
+      <h1 id="entry-heading">우리 교회 찾기</h1>
+      <p class="entry-description">예배 일정과 이번 주 말씀을 확인하세요.</p>
+      <form id="church-form" novalidate>
+        <label for="church-code">교회 코드 6자리</label>
+        <input id="church-code" name="code" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 274 816" aria-describedby="church-hint church-error">
+        <p id="church-hint" class="entry-hint">주보나 교회 카톡방에서 받은 코드를 입력하세요.</p>
+        <p id="church-error" class="entry-error" role="alert" hidden></p>
+        <button class="button primary entry-button" type="submit">교회 찾기</button>
+      </form>
+      <div id="church-match" class="church-match" hidden>
+        <p><strong>늘봄교회</strong><br><span>경기 김포 · 예시 교회</span></p>
+        <button id="choose-church" class="button primary entry-button" type="button">우리 교회로 설정</button>
+      </div>
+      <a class="sample-link" href="#home">예시 교회 둘러보기</a>
+    </section>
+  </div>
+</template>
+<template id="login">
+  <div class="welcome">
+    <section class="entry-card login-card" aria-labelledby="login-heading">
+      <h1 id="login-heading">관리자 로그인</h1>
+      <p class="entry-description">카카오·Google 계정 연결을 준비 중이에요.</p>
+      <a class="button secondary entry-button" href="#entry">교회 찾기로 돌아가기</a>
+    </section>
+  </div>
+</template>
+<template id="home">
+  <div class="page-heading church-heading">
+    <h1>늘봄교회</h1>
+    <p>예시 교회</p>
+  </div>
+  <section class="featured" aria-labelledby="weekly-word">
+    <img src="./web/chapel.webp" alt="" class="featured-art" width="460" height="306">
+    <div class="featured-content">
+      <p class="feature-label">이번 주 말씀</p>
+      <h2 id="weekly-word">평안한 하루</h2>
+      <p class="feature-reference">요한복음 14장 27절</p>
+      <a class="feature-link" href="#devotion">말씀 읽기</a>
+    </div>
+  </section>
+  <div class="menu-list">
+    <a class="menu-row" href="#bulletin">
+      <span class="menu-icon blue"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>이번 주 주보</strong><small>예배 순서와 교회 소식</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+    <a class="menu-row" href="#worship">
+      <span class="menu-icon green"><span class="icon" data-icon="worship" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>예배 안내</strong><small>주일예배 · 오전 11시</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+    <a class="menu-row" href="#bulletin/news">
+      <span class="menu-icon lilac"><span class="icon" data-icon="news" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>교회 소식</strong><small>새가족 환영 모임</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+  </div>
+</template>
+<template id="bulletin">
+  <div class="page-heading"><h1>이번 주 주보</h1><p>늘봄교회 · 예시</p></div>
+  <article class="paper">
+    <section><h2>주일예배</h2><p>일요일 오전 11시 · 본당</p></section>
+    <section><h2>이번 주 말씀</h2><p>평안한 하루 · 요한복음 14장 27절</p></section>
+    <section id="bulletin-news" tabindex="-1"><h2>교회 소식</h2><p>예배 후 본당에서 새가족 환영 모임이 있습니다.</p></section>
+  </article>
+</template>
+<template id="worship">
+  <div class="page-heading"><h1>예배 안내</h1><p>늘봄교회 · 예시</p></div>
+  <article class="paper">
+    <section><h2>주일예배</h2><p>일요일 오전 11시 · 본당</p></section>
+    <section><h2>수요예배</h2><p>수요일 오후 7시 30분 · 본당</p></section>
+  </article>
+</template>
+<template id="devotion">
+  <div class="page-heading"><h1>이번 주 말씀</h1><p>늘봄교회 · 예시</p></div>
+  <article class="paper">
+    <h2 class="devotion-title">평안한 하루</h2>
+    <div class="row"><button class="button primary" data-listen>묵상 듣기</button><a class="button secondary" href="#read/14/27">요한복음 14장 27절</a></div>
+    <section><h3>묵상</h3><p data-spoken>오늘은 잠시 멈추고 마음을 돌봅니다. 서두르지 않고 지금 할 수 있는 작은 일부터 시작해 봅니다.</p></section>
+    <section><h3>적용</h3><p data-spoken>오늘 만나는 한 사람에게 따뜻한 인사를 건네 봅니다.</p></section>
+    <section><h3>기도</h3><p data-spoken>오늘도 평안한 마음을 주세요. 주변 사람들에게 그 평안을 나누게 해 주세요.</p></section>
+  </article>
+  <div class="menu-list">
+    <a class="menu-row" href="#search">
+      <span class="menu-icon blue"><span class="icon" data-icon="search" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>성경 찾기</strong></span><span class="chevron" aria-hidden="true"></span>
+    </a>
+  </div>
+</template>
+<template id="search">
+  <a class="back" href="#devotion">말씀으로</a>
+  <div class="page-heading"><h1>성경 찾기</h1><p id="range">예시 범위 · 요한복음 13–15장</p></div>
+  <article class="paper"><label for="query">책 이름 또는 구절</label><input id="query" type="search" placeholder="예: 요 14:27" aria-describedby="range"><div id="results" class="results" aria-live="polite"></div></article>
+</template>
+<template id="read">
+  <a class="back" id="reader-back" href="#search">성경 찾기로</a>
+  <div class="page-heading"><h1 id="chapter-name"></h1><p>예시 본문</p></div>
+  <article class="paper"><ol id="verses"></ol><nav class="row" aria-label="장 이동"><a class="button secondary" id="previous">이전 장</a><a class="button secondary" id="next">다음 장</a></nav></article>
+</template>
+<template id="settings">
+  <div class="page-heading"><h1>설정</h1></div>
+  <div class="menu-list">
+    <button id="size" class="menu-row size" type="button" aria-pressed="false">
+      <span class="menu-icon blue font-icon" aria-hidden="true">가</span>
+      <span class="menu-text"><strong>큰 글씨</strong></span>
+      <span class="toggle" aria-hidden="true"></span>
+    </button>
+    <a href="#entry" class="menu-row">
+      <span class="menu-icon green"><span class="icon" data-icon="swap" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>교회 변경</strong><small>교회 코드로 다시 찾기</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+  </div>
+</template>
+<div id="status" role="status" class="status"></div>
+</body>
+</html>
