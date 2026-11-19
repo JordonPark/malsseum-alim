@@ -13,6 +13,7 @@ const settingsLink = document.querySelector('.settings-link');
 const tabs = document.querySelector('.tabs');
 const memberTabs = tabs.querySelector('[data-member-tabs]');
 const adminTabs = tabs.querySelector('[data-admin-tabs]');
+const memberEntryCode = '002431';
 const adminEntryCode = '002432';
 const adminPreviewKey = 'adminPreviewOpen';
 const churchNameKey = 'churchNamePreview';
@@ -25,14 +26,14 @@ try { document.documentElement.classList.toggle('large', localStorage.getItem('l
 try { adminPreviewOpen = sessionStorage.getItem(adminPreviewKey) === 'true'; } catch {}
 try { churchNamePreview = sessionStorage.getItem(churchNameKey)?.trim() || ''; } catch {}
 
-function setAdminPreview(open) {
+function setAdminPreview(open, destination) {
   adminPreviewOpen = open;
   // This tab preference controls navigation to a public demo.
   try {
     if (open) sessionStorage.setItem(adminPreviewKey, 'true');
     else sessionStorage.removeItem(adminPreviewKey);
   } catch {}
-  location.hash = open ? 'home' : 'entry';
+  location.hash = destination;
 }
 
 function setupSettings(fromEntry) {
@@ -48,7 +49,7 @@ function setupSettings(fromEntry) {
   const adminLeave = app.querySelector('[data-admin-leave]');
   adminLogin.hidden = adminPreviewOpen;
   adminLeave.hidden = !adminPreviewOpen;
-  adminLeave.onclick = () => setAdminPreview(false);
+  adminLeave.onclick = () => setAdminPreview(false, 'entry');
   if (fromEntry) {
     adminLogin.href = '#login';
     const church = app.querySelector('a[href="#entry"]');
@@ -205,7 +206,11 @@ function setupCodeEntry(adminOnly) {
     event.preventDefault();
     const code = input.value.replace(/[\s-]/g, '');
     if (code === adminEntryCode) {
-      setAdminPreview(true);
+      setAdminPreview(true, 'home');
+      return;
+    }
+    if (!adminOnly && code === memberEntryCode) {
+      setAdminPreview(false, 'home');
       return;
     }
     const validCode = /^([0-9]{6}|[A-Za-z][0-9]{5})$/.test(code);

@@ -6,7 +6,7 @@ create table public.churches (
   code text collate "C" not null unique,
   constraint churches_code_format check (
     code ~ '^([0-9]{6}|[A-Z][0-9]{5})$'
-    and code not in ('002432', '274816')
+    and code not in ('002431', '002432', '274816')
   )
 );
 
@@ -21,7 +21,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  reserved constant text[] := array['002432', '274816'];
+  reserved constant text[] := array['002431', '002432', '274816'];
   first_letter integer := floor(random() * 26)::integer;
   code_prefix text;
   pool_size integer;
