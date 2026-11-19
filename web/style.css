@@ -842,6 +842,43 @@ input {
 .entry-error { color: #9b2f20; font-weight: 700; }
 [data-code-form] input[aria-invalid="true"] { border-color: #9b2f20; }
 .entry-button { width: 100%; }
+.ocr-action { width: 100%; margin-bottom: 13px; }
+.worship-import { display: grid; gap: 13px; }
+.worship-import .paper { min-width: 0; background: var(--paper); }
+.worship-import input[type="file"] { padding: 8px; font-size: .88rem; }
+.worship-import .entry-hint, .worship-import .ocr-message { margin: 8px 0; overflow-wrap: anywhere; }
+.ocr-message:empty { display: none; }
+.worship-import button:disabled { opacity: .5; cursor: default; }
+.worship-draft-row {
+  min-width: 0;
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.worship-draft-row legend, .ocr-sources summary { font-weight: 750; }
+.worship-draft-row label { margin-bottom: 8px; }
+.worship-draft-row input, .worship-draft-row select { margin-top: 4px; font-weight: 400; }
+.worship-draft-row select {
+  width: 100%;
+  min-height: 52px;
+  padding: 6px;
+  border: 1px solid #899990;
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+.worship-draft-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 132px), 1fr));
+  gap: 0 8px;
+}
+.worship-draft-fields input { min-width: 0; }
+.ocr-footer { margin-top: 10px; }
+.ocr-sources details { margin-top: 8px; }
+.ocr-sources summary { overflow-wrap: anywhere; cursor: pointer; }
+.ocr-sources pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
 #login-heading { margin-bottom: 18px; }
 .admin-enter { margin-top: 12px; }
 .sample-link {

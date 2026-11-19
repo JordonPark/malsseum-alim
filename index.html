@@ -10,8 +10,8 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=14">
-<script defer src="./web/app.js?v=8"></script>
+<link rel="stylesheet" href="./web/style.css?v=15">
+<script defer src="./web/app.js?v=9"></script>
 </head>
 <body>
 <header class="top">
@@ -105,7 +105,7 @@
     </a>
     <a class="menu-row" href="#worship">
       <span class="menu-icon green"><span class="icon" data-icon="worship" aria-hidden="true"></span></span>
-      <span class="menu-text"><strong>예배 안내</strong><small>주일예배 · 오전 11시</small></span>
+      <span class="menu-text"><strong>예배 안내</strong><small data-worship-summary>주일예배 · 오전 11시</small></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
     <a class="menu-row" href="#bulletin/news">
@@ -123,6 +123,7 @@
       <span class="sample-label">예시 주보</span>
     </div>
   </header>
+  <a class="button secondary ocr-action" href="#bulletin/import" data-worship-import hidden>주보에서 예배시간 가져오기</a>
   <article class="bulletin" aria-label="늘봄교회 주보">
     <section class="service-card" aria-labelledby="bulletin-service-title">
       <div>
@@ -179,6 +180,7 @@
       <span class="sample-label">예시 일정</span>
     </div>
   </header>
+  <a class="button secondary ocr-action" href="#bulletin/import" data-worship-import hidden>주보에서 예배시간 가져오기</a>
   <div class="worship-schedule">
     <section class="service-card" aria-labelledby="worship-sunday">
       <div>
@@ -204,6 +206,48 @@
       <span class="chevron" aria-hidden="true"></span>
     </a>
   </div>
+</template>
+<template id="worship-import">
+  <a class="back" href="#worship">예배 안내로</a>
+  <header class="page-heading">
+    <h1>주보에서 예배시간 가져오기</h1>
+    <p>읽어 온 예배 이름, 요일, 시간을 원본과 비교해 주세요.</p>
+  </header>
+  <form class="worship-import">
+    <section class="paper">
+      <label for="bulletin-files">주보 사진 또는 PDF</label>
+      <input id="bulletin-files" type="file" accept="image/*,.pdf,application/pdf" multiple aria-describedby="bulletin-files-hint">
+      <p id="bulletin-files-hint" class="entry-hint">여러 장을 한 번에 선택할 수 있어요.</p>
+      <button type="button" class="button primary" data-ocr-read>예배시간 읽기</button>
+      <p class="ocr-message" role="status" data-ocr-message></p>
+    </section>
+    <section class="paper" aria-labelledby="worship-draft-heading">
+      <h2 id="worship-draft-heading">예배시간 초안</h2>
+      <div data-worship-rows></div>
+      <button type="button" class="button secondary" data-worship-add>예배 추가</button>
+      <div class="row ocr-footer">
+        <button type="submit" class="button primary" disabled>미리보기 적용</button>
+        <button type="button" class="button secondary" data-worship-reset hidden>미리보기 해제</button>
+      </div>
+      <p class="entry-hint">적용한 일정은 이 브라우저의 관리자 화면에 표시돼요.</p>
+    </section>
+    <details class="paper ocr-sources" data-ocr-sources hidden>
+      <summary>인식한 원문 보기</summary>
+      <div data-ocr-pages></div>
+    </details>
+  </form>
+</template>
+<template id="worship-draft-row">
+  <fieldset class="worship-draft-row">
+    <legend>예배</legend>
+    <label>예배 이름<input data-worship-name type="text" maxlength="80" required></label>
+    <div class="worship-draft-fields">
+      <label>요일<select data-worship-day required><option value="">선택</option></select></label>
+      <label>시간<input data-worship-time type="time" required></label>
+    </div>
+    <p class="entry-hint" data-worship-source hidden></p>
+    <button type="button" class="button secondary" data-worship-remove>예배 삭제</button>
+  </fieldset>
 </template>
 <template id="devotion">
   <header class="page-heading church-detail-heading">

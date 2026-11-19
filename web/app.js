@@ -207,7 +207,10 @@ function render() {
   status.textContent = '';
   const [route, detail, verse] = location.hash.slice(1).split('/');
   let page;
-  if (route === 'admin' || (route === 'login' && adminPreviewOpen)) {
+  if (route === 'bulletin' && detail === 'import') {
+    page = adminPreviewOpen ? 'worship-import' : 'bulletin';
+    if (!adminPreviewOpen) history.replaceState(null, '', '#bulletin');
+  } else if (route === 'admin' || (route === 'login' && adminPreviewOpen)) {
     page = adminPreviewOpen ? 'home' : 'login';
     history.replaceState(null, '', '#' + page);
   } else {
@@ -224,13 +227,26 @@ function render() {
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
   if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');
   else settingsLink.removeAttribute('aria-current');
-  const activeTab = ['search', 'read'].includes(page) ? 'devotion' : page;
+  const activeTab = page === 'worship-import' ? 'bulletin' : ['search', 'read'].includes(page) ? 'devotion' : page;
   for (const [name, link] of churchTabs) {
     if (name === activeTab) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
   renderChurchBranding();
+  if (adminPreviewOpen && ['home', 'worship', 'bulletin', 'worship-import'].includes(page)) {
+    const pageHeader = app.firstElementChild;
+    app.querySelectorAll('[data-worship-import]').forEach(link => { link.hidden = false; });
+    import('./worship-draft.mjs?v=1').then(module => {
+      if (!pageHeader.isConnected) return;
+      if (page === 'worship-import') module.setupWorshipImport(app.querySelector('.worship-import'));
+      else module.renderWorshipPreview(app, page);
+    }).catch(() => {
+      if (pageHeader.isConnected && page === 'worship-import') {
+        status.textContent = '예배시간 가져오기를 열지 못했어요. 새로고침한 뒤 다시 시도해 주세요.';
+      }
+    });
+  }
   if (page === 'entry' || page === 'login') setupCodeEntry(page === 'login');
   if (page === 'search') setupSearch();
   if (page === 'read') setupReader(Number(detail), Number(verse));
