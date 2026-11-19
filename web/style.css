@@ -425,6 +425,120 @@ main { padding: 26px 22px 35px; }
 .size[aria-pressed="true"] .toggle { background: var(--green); }
 .size[aria-pressed="true"] .toggle::after { transform: translateX(18px); }
 
+.bulletin-heading { margin-bottom: 17px; }
+.bulletin-heading-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 5px;
+}
+
+.bulletin-heading-meta p { margin: 0; font-size: .95rem; }
+.bulletin-example {
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #eaf1ea;
+  color: #486356;
+  font-size: .87rem;
+  font-weight: 650;
+}
+
+.bulletin {
+  display: grid;
+  gap: 13px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.bulletin-service {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(54px, 27%, 156px);
+  align-items: center;
+  gap: 8px;
+  padding: 17px clamp(14px, 4vw, 23px);
+  border: 1px solid #d8e5d9;
+  border-radius: 23px;
+  background: linear-gradient(110deg, #edf5ec 35%, #fbf8e9);
+}
+
+.bulletin-service h2, .bulletin-card h2, .bulletin-order summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 780;
+}
+
+.bulletin-service h2 { color: var(--green); }
+.bulletin-service h2 .icon { width: 1.2rem; height: 1.2rem; flex: none; }
+.bulletin-time {
+  display: block;
+  margin-top: 5px;
+  font-size: 1.85rem;
+  line-height: 1.25;
+  font-weight: 850;
+  letter-spacing: -.045em;
+}
+
+.bulletin-service-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px 9px;
+  margin: 8px 0 0;
+  color: #3f574c;
+  font-size: .94rem;
+  font-weight: 650;
+}
+
+.bulletin-place {
+  padding: 1px 8px;
+  background: #fff9;
+  border: 1px solid #d1dfd3;
+  border-radius: 12px;
+}
+
+.bulletin-chapel { display: block; width: 100%; height: auto; }
+.bulletin-card {
+  padding: 15px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+
+.bulletin-card .menu-icon { width: 2.2rem; height: 2.2rem; border-radius: 11px; flex: none; }
+.bulletin-card .menu-icon .icon { width: 1.2rem; height: 1.2rem; }
+.bulletin-card h3 {
+  margin: 10px 0 2px;
+  font-size: 1.23rem;
+  line-height: 1.35;
+  letter-spacing: -.025em;
+}
+
+.bulletin-card p { margin: 0; color: var(--muted); line-height: 1.6; }
+.bulletin-sermon { background: #fffdf6; border-color: #ece5d2; }
+.bulletin-sermon h3 { font-size: 1.4rem; }
+.bulletin-sermon .button { min-height: 44px; margin-top: 12px; font-size: .94rem; }
+
+.bulletin-order { padding: 0; }
+.bulletin-order summary {
+  min-height: 58px;
+  padding: 11px 16px;
+  border-radius: inherit;
+  list-style: none;
+  cursor: pointer;
+}
+
+.bulletin-order summary::-webkit-details-marker { display: none; }
+.bulletin-order summary .chevron { margin-inline-start: auto; transform: rotate(45deg); }
+.bulletin-order[open] summary .chevron { transform: rotate(225deg); }
+.bulletin-order ol { margin: 0 16px; padding: 1px 0 12px 2.3rem; }
+.bulletin-order li { padding: 6px 0 6px 5px; }
+.bulletin-order li::marker { color: var(--green); font-weight: 750; }
+
 .paper { padding: 19px; border: 1px solid var(--line); border-radius: 18px; }
 .paper section { padding: 16px 0; }
 .paper section:first-child { padding-top: 1px; }

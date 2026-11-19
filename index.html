@@ -7,7 +7,7 @@
 <title>늘새복</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=4">
+<link rel="stylesheet" href="./web/style.css?v=5">
 <script defer src="./web/app.js"></script>
 </head>
 <body>
@@ -100,11 +100,59 @@
   </nav>
 </template>
 <template id="bulletin">
-  <div class="page-heading"><h1>이번 주 주보</h1><p>늘봄교회 · 예시</p></div>
-  <article class="paper">
-    <section><h2>주일예배</h2><p>일요일 오전 11시 · 본당</p></section>
-    <section><h2>이번 주 말씀</h2><p>평안한 하루 · 요한복음 14장 27절</p></section>
-    <section id="bulletin-news" tabindex="-1"><h2>교회 소식</h2><p>예배 후 본당에서 새가족 환영 모임이 있습니다.</p></section>
+  <header class="page-heading bulletin-heading">
+    <h1>이번 주 주보</h1>
+    <div class="bulletin-heading-meta">
+      <p>늘봄교회</p>
+      <span class="bulletin-example">예시 주보</span>
+    </div>
+  </header>
+  <article class="bulletin" aria-label="늘봄교회 주보">
+    <section class="bulletin-service" aria-labelledby="bulletin-service-title">
+      <div>
+        <h2 id="bulletin-service-title"><span class="icon" data-icon="worship" aria-hidden="true"></span>주일예배</h2>
+        <time class="bulletin-time" datetime="11:00">오전 11시</time>
+        <p class="bulletin-service-details">
+          <time datetime="2026-11-22">11월 22일 일요일</time>
+          <span class="bulletin-place">본당</span>
+        </p>
+      </div>
+      <img class="bulletin-chapel" src="./web/chapel.webp" alt="" width="460" height="306">
+    </section>
+
+    <details class="bulletin-card bulletin-order">
+      <summary>
+        <span class="menu-icon blue"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>
+        예배 순서
+        <span class="chevron" aria-hidden="true"></span>
+      </summary>
+      <ol>
+        <li>찬송</li>
+        <li>대표기도</li>
+        <li>성경 봉독</li>
+        <li>설교</li>
+        <li>축도</li>
+      </ol>
+    </details>
+
+    <section class="bulletin-card bulletin-sermon" aria-labelledby="bulletin-sermon-title">
+      <h2 id="bulletin-sermon-title">
+        <span class="menu-icon gold"><span class="icon" data-icon="word" aria-hidden="true"></span></span>
+        설교 말씀
+      </h2>
+      <h3>평안한 하루</h3>
+      <p>요한복음 14장 27절</p>
+      <a class="button primary" href="#devotion">말씀 읽기</a>
+    </section>
+
+    <section class="bulletin-card bulletin-news" id="bulletin-news" tabindex="-1" aria-labelledby="bulletin-news-title">
+      <h2 id="bulletin-news-title">
+        <span class="menu-icon green"><span class="icon" data-icon="news" aria-hidden="true"></span></span>
+        교회 소식
+      </h2>
+      <h3>새가족 환영 모임</h3>
+      <p>예배 후 본당에서 모입니다.</p>
+    </section>
   </article>
 </template>
 <template id="worship">
