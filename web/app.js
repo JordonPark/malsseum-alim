@@ -24,6 +24,7 @@ function setupSettings(fromEntry) {
     try { localStorage.setItem('largeText', large); } catch {}
   };
   if (fromEntry) {
+    app.querySelector('[data-admin-login]').href = '#login';
     const church = app.querySelector('a[href="#entry"]');
     church.querySelector('strong').textContent = '교회 찾기';
     church.querySelector('small').remove();
@@ -165,8 +166,7 @@ function render() {
   tabs.hidden = fromEntry || page === 'login';
   document.body.classList.toggle('has-tabs', !tabs.hidden);
   brand.href = fromEntry ? '#entry' : '#home';
-  loginLink.hidden = page === 'login';
-  loginLink.href = fromEntry ? '#login' : '#login/home';
+  loginLink.hidden = page !== 'entry';
   settingsLink.hidden = page === 'login';
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
   if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');

@@ -11,14 +11,14 @@
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
 <link rel="stylesheet" href="./web/style.css?v=10">
-<script defer src="./web/app.js?v=2"></script>
+<script defer src="./web/app.js?v=3"></script>
 </head>
 <body>
 <header class="top">
   <div class="bar">
     <a class="brand" href="#home"><img src="./web/icon.png" alt=""><span>오늘의 교회</span></a>
     <div class="header-actions">
-      <a class="login-link" href="#login">로그인하기</a>
+      <a class="login-link" href="#login" hidden>로그인하기</a>
       <a class="settings-link" href="#settings" aria-label="설정"><span class="icon" data-icon="settings" aria-hidden="true"></span></a>
     </div>
   </div>
@@ -257,6 +257,11 @@
     <a href="#entry" class="menu-row">
       <span class="menu-icon green"><span class="icon" data-icon="swap" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>교회 변경</strong><small>교회 코드로 다시 찾기</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+    <a href="#login/home" class="menu-row" data-admin-login>
+      <span class="menu-icon gold"><span class="icon" data-icon="settings" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>관리자 로그인</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
   </div>
