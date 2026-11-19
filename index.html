@@ -7,7 +7,7 @@
 <title>늘새복</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=5">
+<link rel="stylesheet" href="./web/style.css?v=6">
 <script defer src="./web/app.js"></script>
 </head>
 <body>
@@ -100,24 +100,24 @@
   </nav>
 </template>
 <template id="bulletin">
-  <header class="page-heading bulletin-heading">
+  <header class="page-heading church-detail-heading">
     <h1>이번 주 주보</h1>
-    <div class="bulletin-heading-meta">
+    <div class="church-detail-meta">
       <p>늘봄교회</p>
-      <span class="bulletin-example">예시 주보</span>
+      <span class="sample-label">예시 주보</span>
     </div>
   </header>
   <article class="bulletin" aria-label="늘봄교회 주보">
-    <section class="bulletin-service" aria-labelledby="bulletin-service-title">
+    <section class="service-card" aria-labelledby="bulletin-service-title">
       <div>
         <h2 id="bulletin-service-title"><span class="icon" data-icon="worship" aria-hidden="true"></span>주일예배</h2>
-        <time class="bulletin-time" datetime="11:00">오전 11시</time>
-        <p class="bulletin-service-details">
+        <time class="service-time" datetime="11:00">오전 11시</time>
+        <p class="service-details">
           <time datetime="2026-11-22">11월 22일 일요일</time>
-          <span class="bulletin-place">본당</span>
+          <span class="service-place">본당</span>
         </p>
       </div>
-      <img class="bulletin-chapel" src="./web/chapel.webp" alt="" width="460" height="306">
+      <img class="service-illustration" src="./web/chapel.webp" alt="" width="460" height="306">
     </section>
 
     <details class="bulletin-card bulletin-order">
@@ -156,11 +156,38 @@
   </article>
 </template>
 <template id="worship">
-  <div class="page-heading"><h1>예배 안내</h1><p>늘봄교회 · 예시</p></div>
-  <article class="paper">
-    <section><h2>주일예배</h2><p>일요일 오전 11시 · 본당</p></section>
-    <section><h2>수요예배</h2><p>수요일 오후 7시 30분 · 본당</p></section>
-  </article>
+  <header class="page-heading church-detail-heading">
+    <h1>예배 안내</h1>
+    <div class="church-detail-meta">
+      <p>늘봄교회</p>
+      <span class="sample-label">예시 일정</span>
+    </div>
+  </header>
+  <div class="worship-schedule">
+    <section class="service-card" aria-labelledby="worship-sunday">
+      <div>
+        <h2 id="worship-sunday"><span class="icon" data-icon="worship" aria-hidden="true"></span>주일예배</h2>
+        <time class="service-time" datetime="11:00">오전 11시</time>
+        <p class="service-details"><span>매주 일요일</span><span class="service-place">본당</span></p>
+      </div>
+      <img class="service-illustration" src="./web/chapel.webp" alt="" width="460" height="306">
+    </section>
+
+    <section class="service-card worship-midweek" aria-labelledby="worship-wednesday">
+      <div>
+        <h2 id="worship-wednesday"><span class="icon" data-icon="worship" aria-hidden="true"></span>수요예배</h2>
+        <time class="service-time" datetime="19:30">오후 7시 30분</time>
+        <p class="service-details"><span>매주 수요일</span><span class="service-place">본당</span></p>
+      </div>
+      <span class="worship-moon" aria-hidden="true"></span>
+    </section>
+
+    <a class="menu-row worship-bulletin-link" href="#bulletin">
+      <span class="menu-icon gold"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>이번 주 주보 보기</strong><small>예배 순서와 설교 말씀</small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
+  </div>
 </template>
 <template id="devotion">
   <div class="page-heading"><h1>이번 주 말씀</h1><p>늘봄교회 · 예시</p></div>
