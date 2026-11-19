@@ -10,13 +10,18 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=10">
-<script defer src="./web/app.js?v=3"></script>
+<link rel="stylesheet" href="./web/style.css?v=11">
+<script defer src="./web/app.js?v=4"></script>
 </head>
 <body>
 <header class="top">
   <div class="bar">
-    <a class="brand" href="#home"><img src="./web/icon.png" alt=""><span>오늘의 교회</span></a>
+    <a class="brand" href="#home">
+      <img class="brand-icon" src="./web/icon.png" width="34" height="34" alt="">
+      <img class="church-logo" width="44" height="34" alt="" hidden>
+      <span class="denomination-badge" aria-hidden="true" hidden></span>
+      <span class="brand-name">오늘의 교회</span>
+    </a>
     <div class="header-actions">
       <a class="login-link" href="#login" hidden>로그인하기</a>
       <a class="settings-link" href="#settings" aria-label="설정"><span class="icon" data-icon="settings" aria-hidden="true"></span></a>
@@ -64,8 +69,11 @@
 </template>
 <template id="home">
   <div class="page-heading church-heading">
-    <h1>늘봄교회</h1>
-    <p>예시 교회</p>
+    <div>
+      <h1>늘봄교회</h1>
+      <p class="church-denomination" hidden></p>
+    </div>
+    <p class="church-example">예시 교회</p>
   </div>
   <section class="featured" aria-labelledby="weekly-word">
     <div class="featured-art" aria-hidden="true">

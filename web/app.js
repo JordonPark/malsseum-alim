@@ -1,6 +1,9 @@
 const app = document.querySelector('#app');
 const status = document.querySelector('#status');
 const brand = document.querySelector('.brand');
+const brandIcon = brand.querySelector('.brand-icon');
+const churchLogo = brand.querySelector('.church-logo');
+const denominationBadge = brand.querySelector('.denomination-badge');
 const loginLink = document.querySelector('.login-link');
 const settingsLink = document.querySelector('.settings-link');
 const tabs = document.querySelector('.tabs');
@@ -114,6 +117,37 @@ function setupReader(chapter, selected) {
 }
 
 const exampleCode = '274816';
+let churchBranding;
+
+function renderChurchBranding() {
+  const church = tabs.hidden ? null : churchBranding?.churches?.[exampleCode];
+  const denomination = churchBranding?.denominations?.[church?.denomination];
+  const hasDenomination = typeof denomination?.name === 'string' && typeof denomination?.label === 'string';
+  const filename = church?.logo;
+  const logo = typeof filename === 'string' && /^[a-z0-9][a-z0-9_-]*\.(?:png|jpe?g|webp)$/i.test(filename)
+    ? './web/church-logos/' + filename : null;
+
+  denominationBadge.textContent = hasDenomination ? denomination.label : '';
+  denominationBadge.title = hasDenomination ? denomination.name : '';
+  denominationBadge.dataset.denomination = hasDenomination ? church.denomination : '';
+  const affiliation = app.querySelector('.church-denomination');
+  if (affiliation) {
+    affiliation.textContent = hasDenomination ? denomination.name : '';
+    affiliation.hidden = !hasDenomination;
+  }
+
+  function showAvailableMark() {
+    const hasLogo = Boolean(logo && churchLogo.complete && churchLogo.naturalWidth);
+    churchLogo.hidden = !hasLogo;
+    denominationBadge.hidden = hasLogo || !hasDenomination;
+    brandIcon.hidden = hasLogo || hasDenomination;
+  }
+
+  churchLogo.onload = churchLogo.onerror = showAvailableMark;
+  if (!logo) churchLogo.removeAttribute('src');
+  else if (churchLogo.getAttribute('src') !== logo) churchLogo.src = logo;
+  showAvailableMark();
+}
 
 function setupEntry() {
   const form = document.querySelector('#church-form');
@@ -177,6 +211,7 @@ function render() {
     else link.removeAttribute('aria-current');
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
+  renderChurchBranding();
   if (page === 'entry') setupEntry();
   if (page === 'search') setupSearch();
   if (page === 'read') setupReader(Number(detail), Number(verse));
@@ -198,3 +233,11 @@ window.addEventListener('hashchange', () => {
 window.addEventListener('pagehide', stopSpeech);
 const destination = render();
 if (destination !== app) destination.scrollIntoView({block: 'nearest'});
+
+fetch('./web/church-branding.json', {cache: 'no-cache'})
+  .then(response => response.ok ? response.json() : null)
+  .then(branding => {
+    churchBranding = branding;
+    renderChurchBranding();
+  })
+  .catch(() => {});

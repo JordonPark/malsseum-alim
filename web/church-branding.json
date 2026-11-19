@@ -1,0 +1,35 @@
+{
+  "denominations": {
+    "pck-tonghap": {
+      "name": "대한예수교장로회(통합)",
+      "label": "예장 통합",
+      "source": "https://www.pck.or.kr/bbs/board.php?bo_table=SM01_01&wr_id=2"
+    },
+    "pck-hapdong": {
+      "name": "대한예수교장로회(합동)",
+      "label": "예장 합동",
+      "source": "https://gapck.org/"
+    },
+    "kmc": {
+      "name": "기독교대한감리회",
+      "label": "감리회",
+      "source": "https://kmc.or.kr/about-kmc/faith-of-kmc"
+    },
+    "kehc": {
+      "name": "기독교대한성결교회",
+      "label": "성결교회",
+      "source": "https://www.kehc.org/home/logo/"
+    },
+    "kbc": {
+      "name": "기독교한국침례회",
+      "label": "침례회",
+      "source": "https://www.koreabaptist.or.kr/Page/Index/22367"
+    }
+  },
+  "churches": {
+    "274816": {
+      "denomination": "pck-tonghap",
+      "logo": null
+    }
+  }
+}
