@@ -10,7 +10,7 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=16">
+<link rel="stylesheet" href="./web/style.css?v=17">
 <script type="module" src="./web/app.js?v=11"></script>
 </head>
 <body>
@@ -39,8 +39,8 @@
   </div>
   <div class="tabs-inner" data-admin-tabs hidden>
     <a href="#home" data-tab="home"><span class="tab-icon"><span class="icon" data-icon="home" aria-hidden="true"></span></span>홈</a>
-    <a href="#bulletin/import" data-tab="bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>주보 관리</a>
-    <a href="#devotion/edit" data-tab="devotion"><span class="tab-icon"><span class="icon" data-icon="word" aria-hidden="true"></span></span>말씀 관리</a>
+    <a href="#bulletin/import" data-tab="bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span></span>주보 관리</a>
+    <a href="#devotion/edit" data-tab="devotion"><span class="tab-icon"><span class="icon" data-icon="word-edit" aria-hidden="true"></span></span>말씀 관리</a>
     <a href="#settings" data-tab="settings"><span class="tab-icon"><span class="icon" data-icon="settings" aria-hidden="true"></span></span>설정</a>
   </div>
 </nav>
@@ -129,7 +129,7 @@
       <span class="sample-label">예시 주보</span>
     </div>
   </header>
-  <a class="button secondary ocr-action" href="#bulletin/import" data-admin-action hidden>주보 가져오기·편집</a>
+  <a class="button secondary ocr-action" href="#bulletin/import" data-admin-action hidden><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span>주보 가져오기·편집</a>
   <article class="bulletin" aria-label="늘봄교회 주보">
     <section class="service-card" aria-labelledby="bulletin-service-title">
       <div>
@@ -193,7 +193,7 @@
       <span class="sample-label">예시 일정</span>
     </div>
   </header>
-  <a class="button secondary ocr-action" href="#bulletin/import/worship" data-admin-action hidden>주보에서 예배시간 가져오기</a>
+  <a class="button secondary ocr-action" href="#bulletin/import/worship" data-admin-action hidden><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span>주보에서 예배시간 가져오기</a>
   <div class="worship-schedule">
     <section class="service-card" aria-labelledby="worship-sunday">
       <div>
@@ -277,7 +277,7 @@
       <span class="sample-label">예시 말씀</span>
     </div>
   </header>
-  <a class="button secondary ocr-action" href="#devotion/edit" data-admin-action hidden>말씀 작성·편집</a>
+  <a class="button secondary ocr-action" href="#devotion/edit" data-admin-action hidden><span class="icon" data-icon="word-edit" aria-hidden="true"></span>말씀 작성·편집</a>
   <article class="devotion" aria-labelledby="devotion-title">
     <div class="devotion-cover">
       <div class="devotion-intro">
@@ -362,12 +362,12 @@
       <span class="chevron" aria-hidden="true"></span>
     </a>
     <a href="#bulletin/import" class="menu-row" data-admin-action hidden>
-      <span class="menu-icon blue"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>
+      <span class="menu-icon blue"><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>주보 가져오기·편집</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
     <a href="#devotion/edit" class="menu-row" data-admin-action hidden>
-      <span class="menu-icon green"><span class="icon" data-icon="word" aria-hidden="true"></span></span>
+      <span class="menu-icon green"><span class="icon" data-icon="word-edit" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>말씀 작성·편집</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
