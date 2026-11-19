@@ -1,4 +1,5 @@
-import {extractWorshipTimes, formatWorshipTime, validWorshipTime, worshipDays} from './worship-times.mjs?v=1';
+import {extractWorshipTimes, formatWorshipTime, validWorshipTime, worshipDays} from './worship-times.mjs?v=2';
+import {applyContent, bulletinFields, checkReference, clearContentPreview, extractBulletinContent, hasContentPreview, setupFields} from './church-content.mjs?v=1';
 
 const draftKey = 'worshipDraft';
 const previewKey = 'worshipPreview';
@@ -26,7 +27,7 @@ function serviceKey({name, day, time}) {
   return JSON.stringify([name.trim().replace(/\s/g, ''), day, time]);
 }
 
-export function setupWorshipImport(form) {
+export function setupWorshipImport(form, returnTo) {
   const files = form.querySelector('[type="file"]');
   const read = form.querySelector('[data-ocr-read]');
   const messages = form.querySelector('[data-ocr-message]');
@@ -35,6 +36,8 @@ export function setupWorshipImport(form) {
   const apply = form.querySelector('[type="submit"]');
   const reset = form.querySelector('[data-worship-reset]');
   const rowTemplate = document.getElementById('worship-draft-row');
+  const saveContentDraft = setupFields(form, 'bulletinContentDraft', bulletinFields);
+  const referenceInput = form.elements.namedItem('reference');
 
   function rowValues(row) {
     return {
@@ -47,7 +50,8 @@ export function setupWorshipImport(form) {
   function updateDraft() {
     draft = [...rows.children].map(rowValues);
     saveServices(draftKey, draft);
-    apply.disabled = !draft.length || read.disabled;
+    const content = saveContentDraft();
+    apply.disabled = read.disabled || (!draft.length && !Object.values(content).some(Boolean));
   }
 
   function addRow(service = {name: '', day: '', time: ''}) {
@@ -64,7 +68,6 @@ export function setupWorshipImport(form) {
       source.hidden = false;
       source.textContent = (service.name && service.day && service.time ? '인식 원문 · ' : '확인 필요 · ') + service.excerpt;
     }
-    row.addEventListener('input', updateDraft);
     row.querySelector('[data-worship-remove]').onclick = () => {
       row.remove();
       updateDraft();
@@ -86,7 +89,12 @@ export function setupWorshipImport(form) {
 
   for (const service of draft) addRow(service);
   updateDraft();
-  reset.hidden = !preview.length;
+  reset.hidden = !preview.length && !hasContentPreview();
+  form.addEventListener('input', event => {
+    if (event.target === files) return;
+    referenceInput.removeAttribute('aria-invalid');
+    updateDraft();
+  });
   form.querySelector('[data-worship-add]').onclick = () => {
     addRow().focus();
     updateDraft();
@@ -105,6 +113,10 @@ export function setupWorshipImport(form) {
     sourcePanel.hidden = true;
     const active = () => form.isConnected;
     let added = 0;
+    let fieldsAdded = false;
+    let autoReference = '';
+    const filled = new Map();
+    const recognizedRefs = new Set();
     const unread = [];
     try {
       const {readBulletinFiles} = await import('./bulletin-ocr.mjs?v=1');
@@ -114,6 +126,21 @@ export function setupWorshipImport(form) {
         onError: label => { unread.push(label); },
         onPage: page => {
           appendSource(page);
+          const content = extractBulletinContent(page.text);
+          for (const key of ['title', 'order', 'news']) {
+            const field = form.elements.namedItem(key);
+            if (!content[key] || (field.value.trim() && field.value !== filled.get(key))) continue;
+            if (key === 'title' && field.value) continue;
+            const lines = [field.value, content[key]].filter(Boolean).join('\n').split('\n');
+            field.value = [...new Set(lines)].join('\n').slice(0, field.maxLength);
+            filled.set(key, field.value);
+            fieldsAdded = true;
+          }
+          content.references.forEach(reference => recognizedRefs.add(reference));
+          if (!referenceInput.value.trim() || referenceInput.value === autoReference) {
+            autoReference = recognizedRefs.size === 1 ? [...recognizedRefs][0] : '';
+            referenceInput.value = autoReference;
+          }
           const existing = new Set([...rows.children].map(row => serviceKey(rowValues(row))));
           for (const service of extractWorshipTimes(page.text)) {
             const key = serviceKey(service);
@@ -131,8 +158,10 @@ export function setupWorshipImport(form) {
       if (active()) {
         read.disabled = files.disabled = false;
         updateDraft();
-        messages.textContent = (added ? '예배 ' + added + '건을 초안에 추가했어요. 시간을 원본과 확인해 주세요.'
-          : '새로 추가할 예배를 찾지 못했어요. 원문을 확인하거나 직접 추가할 수 있어요.') +
+        messages.textContent = (added || fieldsAdded || autoReference
+          ? '예배 ' + added + '건과 읽어 온 내용을 초안에 반영했어요. 원문과 확인해 주세요.'
+          : '새로 채울 항목을 찾지 못했어요. 원문을 확인하고 직접 입력할 수 있어요.') +
+          (recognizedRefs.size > 1 ? ' 성경구절 후보가 여러 개라 원문을 확인해 주세요.' : '') +
           (unread.length ? ' 읽지 못한 파일 또는 페이지 · ' + unread.join(', ') : '');
       }
     }
@@ -141,6 +170,8 @@ export function setupWorshipImport(form) {
   form.onsubmit = event => {
     event.preventDefault();
     if (apply.disabled) return;
+    const content = saveContentDraft();
+    if (!checkReference(form, content.reference, messages)) return;
     const services = draft.map(service => ({...service, name: service.name.trim()}));
     if (services.some(({name, day, time}) => !name || !worshipDays.includes(day) || !validWorshipTime(time))) {
       messages.textContent = '각 예배의 이름, 요일, 시간을 확인해 주세요.';
@@ -148,14 +179,16 @@ export function setupWorshipImport(form) {
     }
     preview = services;
     saveServices(previewKey, preview);
-    location.hash = 'worship';
+    if (Object.values(content).some(Boolean) || hasContentPreview()) applyContent(content);
+    location.hash = returnTo;
   };
 
   reset.onclick = () => {
     preview = [];
     saveServices(previewKey, preview);
+    clearContentPreview();
     reset.hidden = true;
-    messages.textContent = '예배 안내가 예시 일정으로 돌아갔어요.';
+    messages.textContent = '예시 주보와 일정으로 돌아갔어요.';
   };
 }
 

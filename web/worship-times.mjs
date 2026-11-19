@@ -4,6 +4,8 @@ const clock = /(?<![\d:])(?:(오[ \t]*[전후]|[ap]\.?m\.?)[ \t]*)?(\d{1,2})[ \t
 const partialClock = /(?:오[ \t]*[전후]|[ap]\.?m\.?)\s*\d/iu;
 const continuation = /^[\s|·•–-]*(?:(?:매주[ \t]*)?[일월화수목금토][ \t]*요[ \t]*일|매일|평일|오[ \t]*[전후]|[ap]\.?m\.?|[0-9]{1,2}[ \t]*[:시])/iu;
 const otherBulletinContent = /성경[ \t]*(?:봉독|본문|구절)|설교[ \t]*(?:본문|제목|말씀)|본문|찬송(?:가)?|(?:복음|서신)[ \t]*\d/u;
+const scheduleHeading = /^(?:예\s*배\s*(?:시\s*간|안\s*내|일\s*정)|정기\s*예배)(?:\s|[:：]|$)/u;
+const unrelatedHeading = /^(?:예\s*배\s*순\s*서|교\s*회\s*소\s*식|광\s*고|공\s*지(?:사항)?|행사\s*일정)(?:\s|[:：]|$)/u;
 const impliedDays = {주일: '일요일', 수요: '수요일', 금요: '금요일', 토요: '토요일'};
 
 export const worshipDays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '평일', '매일'];
@@ -43,11 +45,15 @@ function collectCandidates(text, name, result) {
 export function extractWorshipTimes(text) {
   const lines = text.normalize('NFKC').split(/\r?\n/u).map(line => line.trim()).filter(Boolean);
   const result = [];
+  let scheduleSection = null;
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
+    if (scheduleHeading.test(line)) scheduleSection = true;
+    if (unrelatedHeading.test(line)) scheduleSection = false;
+    if (scheduleSection === false) continue;
     const names = [...line.matchAll(serviceName)];
     if (!names.length) {
-      collectCandidates(line, '', result);
+      if (scheduleSection) collectCandidates(line, '', result);
       continue;
     }
     for (let part = 0; part < names.length; part++) {

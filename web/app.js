@@ -1,3 +1,6 @@
+import {renderChurchContent, setupWordEditor} from './church-content.mjs?v=1';
+import {formatReference, officialPassage, parseReference, passageText, readerHref, readReference, samplePassage} from './scripture.mjs?v=1';
+
 const app = document.querySelector('#app');
 const status = document.querySelector('#status');
 const brand = document.querySelector('.brand');
@@ -11,11 +14,6 @@ const tabs = document.querySelector('.tabs');
 const churchTabs = new Map([...tabs.querySelectorAll('a')].map(link => [link.hash.slice(1), link]));
 const adminEntryCode = '002432';
 const adminPreviewKey = 'adminPreviewOpen';
-const chapters = {
-  13: [[1, '13장 본문이 여기에 표시됩니다.']],
-  14: [[26, '앞 절의 본문이 여기에 표시됩니다.'], [27, '선택한 구절의 본문이 여기에 표시됩니다.'], [28, '다음 절의 본문이 여기에 표시됩니다.']],
-  15: [[1, '15장 본문이 여기에 표시됩니다.']],
-};
 let utterance;
 let adminPreviewOpen = false;
 
@@ -57,7 +55,7 @@ function setupSettings(fromEntry) {
 function setListenState(playing) {
   const button = app.querySelector('[data-listen]');
   if (!button) return;
-  button.textContent = playing ? '듣기 중지' : '묵상 듣기';
+  button.textContent = playing ? '듣기 중지' : button.dataset.idleLabel || '묵상 듣기';
   button.toggleAttribute('data-playing', playing);
 }
 
@@ -73,7 +71,7 @@ function toggleSpeech() {
     return;
   }
   if (utterance) { stopSpeech(); return; }
-  const title = app.querySelector('#devotion-title').textContent;
+  const title = (app.querySelector('#devotion-title') || app.querySelector('h1')).textContent;
   const paragraphs = app.querySelectorAll('[data-spoken]');
   const speech = new SpeechSynthesisUtterance([title + '.', ...Array.from(paragraphs, p => p.textContent)].join(' '));
   speech.lang = 'ko-KR';
@@ -95,45 +93,35 @@ function setupSearch() {
   function update() {
     const q = input.value.trim().replace(/\s+/g, '');
     result.replaceChildren();
-    for (const chapter of Object.keys(chapters)) {
-      const aliases = ['요한복음' + chapter + '장', '요' + chapter];
-      if (chapter === '14') aliases.push('요14:27', '요한복음14:27', '요한복음14장27절');
-      if (!aliases.some(alias => alias.includes(q))) continue;
-      const verse = chapter === '14' && /27$|27절$/.test(q);
-      const link = document.createElement('a');
-      link.className = 'button secondary';
-      link.href = '#read/' + chapter + (verse ? '/27' : '');
-      link.textContent = '요한복음 ' + chapter + '장' + (verse ? ' 27절' : '');
-      result.append(link);
+    const sampleNames = ['요한복음14장27절', '요한복음14:27', '요14:27'];
+    const ref = parseReference(input.value) || (sampleNames.some(label => label.includes(q)) ? samplePassage : null);
+    if (!ref) {
+      result.textContent = '성경구절을 책 이름, 장, 절로 입력해 주세요.';
+      return;
     }
-    if (!result.childElementCount) result.textContent = '일치하는 예시 구절이 없습니다.';
+    const link = document.createElement('a');
+    link.className = 'button secondary';
+    link.href = readerHref(ref, 'search');
+    link.textContent = formatReference(ref);
+    result.append(link);
   }
   input.oninput = update;
   update();
 }
-function setupReader(chapter, selected) {
-  document.querySelector('#chapter-name').textContent = '요한복음 ' + chapter + '장';
-  if (selected === 27) {
-    const back = document.querySelector('#reader-back');
-    back.href = '#devotion';
-    back.textContent = '이번 주 말씀으로';
-  }
-  for (const [number, text] of chapters[chapter]) {
-    const item = document.createElement('li');
-    const label = document.createElement('strong');
-    label.textContent = number;
-    item.append(label, document.createTextNode(text));
-    if (number === selected) {
-      item.className = 'active';
-      item.setAttribute('aria-current', 'true');
-    }
-    document.querySelector('#verses').append(item);
-  }
-  for (const [name, target] of [['previous', chapter - 1], ['next', chapter + 1]]) {
-    const link = document.getElementById(name);
-    if (chapters[target]) link.href = '#read/' + target;
-    else link.setAttribute('aria-disabled', 'true');
-  }
+function setupReader(reference, origin) {
+  const labels = {bulletin: '주보로 돌아가기', devotion: '이번 주 말씀으로', search: '성경 찾기로'};
+  const back = app.querySelector('#reader-back');
+  back.href = '#' + origin;
+  back.textContent = labels[origin];
+  app.querySelector('#chapter-name').textContent = formatReference(reference);
+  const text = passageText(reference);
+  const quote = app.querySelector('[data-reader-text]');
+  quote.textContent = text;
+  quote.hidden = !text;
+  app.querySelector('[data-listen]').hidden = !text;
+  app.querySelector('[data-reader-edition]').textContent = text
+    ? '개역한글 · 예시 본문 · 대한성서공회 1961' : '대한성서공회 개역개정 본문';
+  app.querySelector('[data-reader-source]').href = officialPassage(reference);
 }
 
 let churchBranding;
@@ -205,7 +193,11 @@ function setupCodeEntry(adminOnly) {
 function render() {
   stopSpeech();
   status.textContent = '';
-  const [route, detail, verse] = location.hash.slice(1).split('/');
+  const [route, detail, third, fourth, fifth, sixth] = location.hash.slice(1).split('/');
+  const legacyReader = route === 'read' && /^\d+$/u.test(detail);
+  const reference = route !== 'read' ? null : legacyReader
+    ? readReference('jhn', detail, third || '1') : readReference(detail, third, fourth, fifth);
+  const readOrigin = ['bulletin', 'search', 'devotion'].includes(sixth) ? sixth : 'devotion';
   let page;
   if (route === 'bulletin' && detail === 'import') {
     page = adminPreviewOpen ? 'worship-import' : 'bulletin';
@@ -213,8 +205,11 @@ function render() {
   } else if (route === 'admin' || (route === 'login' && adminPreviewOpen)) {
     page = adminPreviewOpen ? 'home' : 'login';
     history.replaceState(null, '', '#' + page);
+  } else if (route === 'devotion' && detail === 'edit') {
+    page = adminPreviewOpen ? 'word-editor' : 'devotion';
+    if (!adminPreviewOpen) history.replaceState(null, '', '#devotion');
   } else {
-    page = route === 'read' && Object.hasOwn(chapters, detail) ? 'read'
+    page = reference ? 'read' : route === 'read' ? 'search'
       : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
   }
   const fromEntry = page === 'entry' || (page === 'settings' && detail === 'entry') || (page === 'login' && detail !== 'home');
@@ -227,20 +222,30 @@ function render() {
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
   if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');
   else settingsLink.removeAttribute('aria-current');
-  const activeTab = page === 'worship-import' ? 'bulletin' : ['search', 'read'].includes(page) ? 'devotion' : page;
+  const activeTab = page === 'worship-import' || (page === 'read' && readOrigin === 'bulletin') ? 'bulletin'
+    : ['search', 'read', 'word-editor'].includes(page) ? 'devotion' : page;
   for (const [name, link] of churchTabs) {
     if (name === activeTab) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
   renderChurchBranding();
+  if (['home', 'bulletin', 'devotion'].includes(page)) renderChurchContent(app, page, adminPreviewOpen);
+  if (adminPreviewOpen && !fromEntry) {
+    app.querySelectorAll('[data-admin-action]').forEach(link => { link.hidden = false; });
+  }
+  if (page === 'word-editor') setupWordEditor(app.querySelector('#word-editor-form'));
   if (adminPreviewOpen && ['home', 'worship', 'bulletin', 'worship-import'].includes(page)) {
     const pageHeader = app.firstElementChild;
-    app.querySelectorAll('[data-worship-import]').forEach(link => { link.hidden = false; });
-    import('./worship-draft.mjs?v=1').then(module => {
+    import('./worship-draft.mjs?v=2').then(module => {
       if (!pageHeader.isConnected) return;
-      if (page === 'worship-import') module.setupWorshipImport(app.querySelector('.worship-import'));
-      else module.renderWorshipPreview(app, page);
+      if (page === 'worship-import') {
+        const returnTo = third === 'worship' ? 'worship' : 'bulletin';
+        const back = app.querySelector('[data-import-back]');
+        back.href = '#' + returnTo;
+        back.textContent = returnTo === 'worship' ? '예배 안내로 돌아가기' : '주보로 돌아가기';
+        module.setupWorshipImport(app.querySelector('.worship-import'), returnTo);
+      } else module.renderWorshipPreview(app, page);
     }).catch(() => {
       if (pageHeader.isConnected && page === 'worship-import') {
         status.textContent = '예배시간 가져오기를 열지 못했어요. 새로고침한 뒤 다시 시도해 주세요.';
@@ -249,7 +254,7 @@ function render() {
   }
   if (page === 'entry' || page === 'login') setupCodeEntry(page === 'login');
   if (page === 'search') setupSearch();
-  if (page === 'read') setupReader(Number(detail), Number(verse));
+  if (page === 'read') setupReader(reference, readOrigin);
   if (page === 'settings') setupSettings(fromEntry);
   if (page === 'login' && !fromEntry) {
     const back = app.querySelector('[data-admin-back]');
@@ -257,7 +262,8 @@ function render() {
     back.textContent = '교회 홈으로 돌아가기';
   }
   app.querySelectorAll('[data-listen]').forEach(button => { button.onclick = toggleSpeech; });
-  return page === 'bulletin' && detail === 'news' ? document.getElementById('bulletin-news') : app;
+  const news = app.querySelector('#bulletin-news:not([hidden])');
+  return detail === 'news' && news ? news : app;
 }
 window.addEventListener('hashchange', () => {
   const destination = render();

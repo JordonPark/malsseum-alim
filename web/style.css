@@ -10,7 +10,7 @@
   --shell-width: 600px;
   --tab-height: max(60px, 3.4rem);
   --bottom-inset: env(safe-area-inset-bottom, 0px);
-  font: 100%/1.5 "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", system-ui, sans-serif;
+  font: 112.5%/1.58 "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", system-ui, sans-serif;
   background: #eaf0ea;
   color: var(--ink);
 }
@@ -19,7 +19,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 a { color: inherit; }
-button, input { font: inherit; }
+button, input, textarea { font: inherit; }
 button { color: inherit; }
 :focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 :target, #bulletin-news { scroll-margin: 5.5rem 0 calc(var(--tab-height) + var(--bottom-inset) + 1rem); }
@@ -588,6 +588,56 @@ main { padding: 26px 22px 35px; }
   letter-spacing: -.025em;
 }
 
+.bulletin-scripture, .scripture-reader {
+  padding: clamp(16px, 5vw, 24px);
+  border: 1px solid #dbe7db;
+  border-radius: 22px;
+  background: radial-gradient(ellipse at top right, #faf0d4 0, transparent 54%), #f0f6ee;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+.bulletin-scripture h2 { color: var(--green); }
+.bulletin-scripture h3 { margin-top: 11px; }
+.bulletin-scripture blockquote, .scripture-reader blockquote {
+  margin: 12px 0;
+  font-size: 1.14rem;
+  line-height: 1.8;
+}
+.bulletin-scripture .button { width: 100%; margin-top: 13px; }
+.bulletin-scripture .passage-edition, .scripture-edition { color: var(--muted); font-size: .88rem; }
+.scripture-reader blockquote {
+  margin: 9px 0 18px;
+  font-size: clamp(1.32rem, 4.75vw, 1.53rem);
+  line-height: 1.8;
+}
+.scripture-edition { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.scripture-edition p { margin: 0; }
+.scripture-edition .icon { color: var(--green); width: 1.45rem; height: 1.45rem; flex: none; }
+.scripture-reader .button + .button { margin-top: 9px; }
+.scripture-reader .button { margin-top: 10px; }
+.bulletin-news p, .devotion-card p { white-space: pre-line; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .chapel-art, .service-illustration { animation: illustration-drift 8s ease-in-out infinite; }
+  .bulletin-scripture h2 .icon, .scripture-edition .icon { animation: illustration-drift 7s ease-in-out infinite; }
+  .worship-moon::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #7669a8;
+    animation: sunlight-glow 6s ease-in-out infinite;
+  }
+}
+
+@keyframes illustration-drift {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-3px) rotate(-1deg); }
+}
+
 .bulletin-card p { margin: 0; color: var(--muted); line-height: 1.6; }
 .bulletin-sermon { background: #fffdf6; border-color: #ece5d2; }
 .bulletin-sermon h3 { font-size: 1.4rem; }
@@ -781,7 +831,7 @@ main { padding: 26px 22px 35px; }
 .row > * { flex: 1 1 135px; }
 .back { margin: -4px 0 4px; }
 label { display: block; font-weight: 750; margin-bottom: 7px; }
-input {
+input, textarea {
   width: 100%;
   min-height: 52px;
   padding: 10px 12px;
@@ -792,11 +842,10 @@ input {
 }
 
 .results { display: grid; gap: 8px; margin-top: 14px; }
-#verses { padding: 0; margin: 0 0 14px; list-style: none; }
-#verses li { display: flex; gap: 12px; padding: 10px 8px; border-radius: 8px; }
-#verses strong { min-width: 2ch; }
-#verses .active { border-inline-start: 3px solid var(--green); background: var(--sage); }
-[aria-disabled="true"] { opacity: .5; cursor: default; }
+.content-fields label { margin: 12px 0; }
+.content-fields label input, .content-fields label textarea { margin-top: 4px; font-weight: 400; }
+.content-fields textarea { display: block; resize: vertical; }
+.content-fields input[aria-invalid="true"] { border-color: #9b2f20; }
 
 .welcome { max-width: 410px; margin: 0 auto; }
 .entry-card {
