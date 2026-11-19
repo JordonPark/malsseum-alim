@@ -4,6 +4,6 @@
 
 ## 현재 GitHub Pages 설정
 
-관리자가 지정한 로고는 저장소 권한을 가진 배포 담당자가 반영한다. `web/church-logos/`에 PNG, JPEG 또는 WebP 파일을 추가하고 [교회 설정 파일](../web/church-branding.json)의 `churches`에서 교회 코드의 `logo` 값에 파일명만 입력한다. 파일명은 영문, 숫자, 하이픈, 밑줄을 사용한다. `logo`를 `null`로 설정하면 교단명 배지가 표시된다. `denomination`도 `null`이면 앱 아이콘이 표시된다.
+예시 교회의 로고를 바꾸려면 `web/church-logos/`에 PNG, JPEG 또는 WebP 파일을 추가하고 [교회 설정 파일](../web/church-branding.json)의 `exampleChurch.logo` 값에 파일명만 입력한다. 파일명은 영문, 숫자, 하이픈, 밑줄을 사용한다. `logo`를 `null`로 설정하면 교단명 배지가 표시된다. `denomination`도 `null`이면 앱 아이콘이 표시된다.
 
 늘봄교회의 예장 통합 표시는 예시 데이터다. 앱에서 교회 관리자가 직접 교단과 로고를 변경하는 기능은 Supabase 인증과 교회별 수정 권한을 연결하는 단계에서 제공한다.

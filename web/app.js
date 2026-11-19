@@ -116,11 +116,10 @@ function setupReader(chapter, selected) {
   }
 }
 
-const exampleCode = '274816';
 let churchBranding;
 
 function renderChurchBranding() {
-  const church = tabs.hidden ? null : churchBranding?.churches?.[exampleCode];
+  const church = tabs.hidden ? null : churchBranding?.exampleChurch;
   const denomination = churchBranding?.denominations?.[church?.denomination];
   const hasDenomination = typeof denomination?.name === 'string' && typeof denomination?.label === 'string';
   const filename = church?.logo;
@@ -153,41 +152,21 @@ function setupEntry() {
   const form = document.querySelector('#church-form');
   const input = document.querySelector('#church-code');
   const error = document.querySelector('#church-error');
-  const match = document.querySelector('#church-match');
-  const choose = document.querySelector('#choose-church');
   input.addEventListener('input', () => {
-    match.hidden = true;
     error.hidden = true;
     input.removeAttribute('aria-invalid');
   });
   form.addEventListener('submit', event => {
     event.preventDefault();
     const code = input.value.replace(/[\s-]/g, '');
-    match.hidden = code !== exampleCode;
-    if (match.hidden) {
-      error.textContent = /^[0-9]{6}$/.test(code)
-        ? '교회를 찾지 못했어요. 예시 코드 274 816을 사용해 보세요.'
-        : '교회 코드 숫자 6자리를 다시 확인해 주세요.';
-      error.hidden = false;
+    const validCode = /^[0-9]{6}$/.test(code);
+    error.textContent = validCode ? '교회 코드 조회를 준비 중이에요.' : '교회 코드 숫자 6자리를 다시 확인해 주세요.';
+    error.hidden = false;
+    if (!validCode) {
       input.setAttribute('aria-invalid', 'true');
       input.focus();
-      return;
     }
-    error.hidden = true;
-    input.removeAttribute('aria-invalid');
-    choose.focus();
   });
-  choose.addEventListener('click', () => {
-    try { localStorage.setItem('neulsaebokChurch', exampleCode); } catch {}
-    location.hash = 'home';
-  });
-}
-
-function initialPage() {
-  try {
-    if (localStorage.getItem('neulsaebokChurch') === exampleCode) return 'home';
-  } catch {}
-  return 'entry';
 }
 
 function render() {
@@ -195,7 +174,7 @@ function render() {
   status.textContent = '';
   const [route, detail, verse] = location.hash.slice(1).split('/');
   const page = route === 'read' && Object.hasOwn(chapters, detail) ? 'read'
-    : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : initialPage();
+    : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
   const fromEntry = page === 'entry' || (page === 'settings' && detail === 'entry') || (page === 'login' && detail !== 'home');
   tabs.hidden = fromEntry || page === 'login';
   document.body.classList.toggle('has-tabs', !tabs.hidden);

@@ -809,12 +809,10 @@ input {
 }
 
 .entry-hint, .entry-error { margin: 8px 0 13px; font-size: .87rem; }
-.entry-hint, .church-match span { color: var(--muted); }
+.entry-hint { color: var(--muted); }
 .entry-error { color: #9b2f20; font-weight: 700; }
 #church-code[aria-invalid="true"] { border-color: #9b2f20; }
 .entry-button { width: 100%; }
-.church-match { margin-top: 14px; padding: 12px; border-radius: 12px; background: var(--sage); }
-.church-match p { margin: 0 0 8px; }
 .sample-link {
   display: flex;
   justify-content: center;

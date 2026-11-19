@@ -26,10 +26,8 @@
       "source": "https://www.koreabaptist.or.kr/Page/Index/22367"
     }
   },
-  "churches": {
-    "274816": {
-      "denomination": "pck-tonghap",
-      "logo": null
-    }
+  "exampleChurch": {
+    "denomination": "pck-tonghap",
+    "logo": null
   }
 }
