@@ -165,6 +165,7 @@ main { padding: 26px 22px 35px; }
 
 .feature-reference { margin: 7px 0 0; color: #514c39; font-size: .94rem; }
 .featured-art {
+  --art-position-y: 55%;
   position: absolute;
   z-index: -2;
   inset: 0 0 0 auto;
@@ -180,10 +181,10 @@ main { padding: 26px 22px 35px; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: right 55%;
+  object-position: right var(--art-position-y);
 }
 
-.featured-grass { display: none; }
+.featured-grass, .featured-sun { display: none; }
 
 /* Soft masks keep each moving patch within the foreground grass. */
 @media (prefers-reduced-motion: no-preference) {
@@ -209,6 +210,49 @@ main { padding: 26px 22px 35px; }
       mask-image: radial-gradient(ellipse 18% 12% at 94% 89%, #000 18%, #000b 49%, transparent 100%);
     }
   }
+
+  @supports (width: 1cqw) {
+    .featured-art { container-type: size; }
+
+    .featured-sun {
+      /* Map the painted sun's center (86.2%, 23.4%) through the cover crop. */
+      --painted-width: max(100cqw, 150cqh);
+      --painted-height: max(66.6667cqw, 100cqh);
+      display: block;
+      position: absolute;
+      top: calc(var(--art-position-y) - .316 * var(--painted-height));
+      right: calc(.138 * var(--painted-width));
+      width: calc(.21 * var(--painted-width));
+      aspect-ratio: 1;
+      transform: translate(50%, -50%);
+    }
+
+    .featured-sun::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff5c1df 9%, #ffed9faa 29%, #ffde8c40 51%, transparent 71%);
+      animation: sunlight-glow 7.6s ease-in-out infinite;
+    }
+
+    .featured-sun-spark {
+      position: absolute;
+      top: 12%;
+      right: 7%;
+      width: 16%;
+      aspect-ratio: 1;
+      clip-path: polygon(50% 0%, 59% 41%, 100% 50%, 59% 59%, 50% 100%, 41% 59%, 0% 50%, 41% 41%);
+      background: #fffae1;
+      animation: sunlight-spark 7.6s ease-in-out infinite;
+    }
+
+    .featured-sun-spark + .featured-sun-spark {
+      inset: 68% auto auto 10%;
+      width: 12%;
+      animation-delay: -3.8s;
+    }
+  }
 }
 
 @keyframes meadow-breeze {
@@ -216,6 +260,16 @@ main { padding: 26px 22px 35px; }
   28% { transform: translateX(var(--breeze-drift)) skewX(var(--breeze-lean)); }
   62% { transform: translateX(calc(-.55 * var(--breeze-drift))) skewX(calc(-.45 * var(--breeze-lean))); }
   79% { transform: translateX(calc(.25 * var(--breeze-drift))); }
+}
+
+@keyframes sunlight-glow {
+  0%, 100% { opacity: .12; transform: scale(.92); }
+  46% { opacity: .87; transform: scale(1.12); }
+}
+
+@keyframes sunlight-spark {
+  0%, 17%, 49%, 100% { opacity: 0; transform: scale(.55); }
+  31% { opacity: .95; transform: scale(1); }
 }
 
 .feature-link, .back {
