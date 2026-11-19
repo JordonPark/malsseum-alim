@@ -30,10 +30,17 @@ function setupSettings(fromEntry) {
   }
 }
 
+function setListenState(playing) {
+  const button = app.querySelector('[data-listen]');
+  if (!button) return;
+  button.textContent = playing ? '듣기 중지' : '묵상 듣기';
+  button.toggleAttribute('data-playing', playing);
+}
+
 function stopSpeech() {
   utterance = undefined;
   window.speechSynthesis?.cancel();
-  document.querySelectorAll('[data-listen]').forEach(button => { button.textContent = '묵상 듣기'; });
+  setListenState(false);
 }
 function toggleSpeech() {
   status.textContent = '';
@@ -42,8 +49,9 @@ function toggleSpeech() {
     return;
   }
   if (utterance) { stopSpeech(); return; }
-  const paragraphs = document.querySelector('#devotion').content.querySelectorAll('[data-spoken]');
-  const speech = new SpeechSynthesisUtterance(['평안한 하루.', ...Array.from(paragraphs, p => p.textContent)].join(' '));
+  const title = app.querySelector('#devotion-title').textContent;
+  const paragraphs = app.querySelectorAll('[data-spoken]');
+  const speech = new SpeechSynthesisUtterance([title + '.', ...Array.from(paragraphs, p => p.textContent)].join(' '));
   speech.lang = 'ko-KR';
   speech.rate = .85;
   speech.onend = () => { if (utterance === speech) stopSpeech(); };
@@ -53,7 +61,7 @@ function toggleSpeech() {
     status.textContent = '음성을 재생할 수 없습니다. 기기의 한국어 음성 설정을 확인해 주세요.';
   };
   utterance = speech;
-  document.querySelectorAll('[data-listen]').forEach(button => { button.textContent = '듣기 중지'; });
+  setListenState(true);
   window.speechSynthesis.speak(speech);
 }
 

@@ -63,11 +63,13 @@ body {
   font-weight: 800;
   letter-spacing: -.04em;
   min-height: 44px;
+  min-width: 0;
   text-decoration: none;
 }
 
-.brand img { width: 34px; height: 34px; border-radius: 10px; }
-.header-actions { gap: 6px; }
+.brand img { width: 34px; height: 34px; border-radius: 10px; flex: none; }
+.brand span { line-height: 1.15; word-break: keep-all; }
+.header-actions { gap: 6px; flex: none; }
 .login-link, .settings-link {
   min-height: 44px;
   justify-content: center;
@@ -446,7 +448,7 @@ main { padding: 26px 22px 35px; }
   font-weight: 650;
 }
 
-.bulletin, .worship-schedule {
+.bulletin, .worship-schedule, .devotion {
   display: grid;
   gap: 13px;
   word-break: keep-all;
@@ -533,14 +535,12 @@ main { padding: 26px 22px 35px; }
   transform: rotate(-22deg);
 }
 
-.worship-schedule .worship-bulletin-link {
+.menu-row.page-shortcut {
   padding: 12px 15px;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 20px;
 }
-
-.worship-schedule .worship-bulletin-link:hover { background: #f4f8f5; }
 
 .bulletin-card {
   padding: 15px 16px;
@@ -579,13 +579,77 @@ main { padding: 26px 22px 35px; }
 .bulletin-order li { padding: 6px 0 6px 5px; }
 .bulletin-order li::marker { color: var(--green); font-weight: 750; }
 
+.devotion-cover {
+  padding: 17px clamp(14px, 4vw, 23px);
+  border: 1px solid #ecdfc1;
+  border-radius: 23px;
+  background: linear-gradient(110deg, #fff8e9, #f9f2df);
+}
+
+.devotion-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(54px, 29%, 166px);
+  align-items: center;
+  gap: 8px;
+}
+
+#devotion-title {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.24;
+  letter-spacing: -.045em;
+}
+
+.devotion-reference {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--green);
+  font-weight: 700;
+  font-size: .95rem;
+  text-underline-offset: 3px;
+}
+
+.devotion-reference .icon { width: 1.12rem; height: 1.12rem; flex: none; }
+.devotion-art { display: block; width: 100%; height: auto; }
+.devotion-listen { width: 100%; margin-top: 7px; gap: 9px; }
+.devotion-listen::before {
+  content: "";
+  width: .66em;
+  height: .66em;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.devotion-listen[data-playing]::before { clip-path: none; border-radius: 2px; }
+.devotion-card {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+}
+
+.devotion-card h3 {
+  margin: 0 0 7px;
+  padding-inline-start: 9px;
+  border-inline-start: 3px solid #63927b;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.devotion-card p { margin: 0; font-size: 1.04rem; line-height: 1.75; }
+.devotion-apply { background: #fffdf6; border-color: #eee6d2; }
+.devotion-apply h3 { border-inline-start-color: #bd9044; }
+.devotion-prayer { background: #f0f6f1; border-color: #dbe8de; }
+.devotion-prayer h3 { border-inline-start-color: #487b66; }
+
 .paper { padding: 19px; border: 1px solid var(--line); border-radius: 18px; }
 .paper section { padding: 16px 0; }
 .paper section:first-child { padding-top: 1px; }
 .paper section:last-child { padding-bottom: 1px; }
 .paper section + section, .paper .row + section { border-top: 1px solid var(--line); }
 .paper h2, .paper h3 { margin: 0 0 5px; font-size: 1.1rem; }
-.paper .devotion-title { margin-bottom: 12px; font-size: 1.38rem; letter-spacing: -.045em; }
 .paper p, .paper li { margin: 0; line-height: 1.65; }
 .paper .row + section { margin-top: 16px; }
 
@@ -682,12 +746,17 @@ input {
 
 @media (hover: hover) {
   .menu-row:hover, .tabs a:hover, .settings-link:hover, .login-link:hover { background: #f8faf9; }
+  .menu-row.page-shortcut:hover { background: #f4f8f5; }
   .feature-link:hover { background: #184637; }
   .back:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 @media (max-width: 390px) {
-  .bar { padding-inline: 15px; }
+  .bar { padding-inline: 15px; gap: 8px; }
+  .brand { gap: 6px; }
+  .brand img { width: 30px; height: 30px; }
+  .header-actions { gap: 2px; }
+  .login-link { padding-inline: 7px; }
   main { padding-inline: 16px; }
   .featured { min-height: 13rem; padding-inline: 18px; }
   .large .featured-art { height: 80%; inset: auto 0 0 auto; }
@@ -699,6 +768,10 @@ input {
 }
 
 @media (max-width: 350px) {
+  .large .devotion-intro { display: block; position: relative; }
+  .large #devotion-title { padding-inline-end: 28%; }
+  .large .devotion-art { position: absolute; inset: 0 0 auto auto; width: 24%; }
+
   .featured::before {
     background: linear-gradient(90deg, #fff7e6 2%, #fff7e6ed 30%, #fff7e6a3 53%, transparent 82%);
   }
