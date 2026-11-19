@@ -159,6 +159,11 @@ function setupEntry() {
   form.addEventListener('submit', event => {
     event.preventDefault();
     const code = input.value.replace(/[\s-]/g, '');
+    // This public shortcut opens the same screen as the login link.
+    if (code === '002432') {
+      location.hash = loginLink.hash;
+      return;
+    }
     const validCode = /^[0-9]{6}$/.test(code);
     error.textContent = validCode ? '교회 코드 조회를 준비 중이에요.' : '교회 코드 숫자 6자리를 다시 확인해 주세요.';
     error.hidden = false;
