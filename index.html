@@ -7,7 +7,7 @@
 <title>늘새복</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css">
+<link rel="stylesheet" href="./web/style.css?v=2">
 <script defer src="./web/app.js"></script>
 </head>
 <body>
@@ -65,7 +65,7 @@
     <p>예시 교회</p>
   </div>
   <section class="featured" aria-labelledby="weekly-word">
-    <img src="./web/chapel.webp" alt="" class="featured-art" width="460" height="306">
+    <img src="./web/church-morning.webp" alt="" class="featured-art" width="960" height="640">
     <div class="featured-content">
       <p class="feature-label">이번 주 말씀</p>
       <h2 id="weekly-word">평안한 하루</h2>
@@ -73,7 +73,7 @@
       <a class="feature-link" href="#devotion">말씀 읽기</a>
     </div>
   </section>
-  <div class="menu-list">
+  <nav class="menu-list home-menu" aria-label="교회 바로가기">
     <a class="menu-row" href="#bulletin">
       <span class="menu-icon blue"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>이번 주 주보</strong><small>예배 순서와 교회 소식</small></span>
@@ -85,11 +85,11 @@
       <span class="chevron" aria-hidden="true"></span>
     </a>
     <a class="menu-row" href="#bulletin/news">
-      <span class="menu-icon lilac"><span class="icon" data-icon="news" aria-hidden="true"></span></span>
+      <span class="menu-icon gold"><span class="icon" data-icon="news" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>교회 소식</strong><small>새가족 환영 모임</small></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
-  </div>
+  </nav>
 </template>
 <template id="bulletin">
   <div class="page-heading"><h1>이번 주 주보</h1><p>늘봄교회 · 예시</p></div>
