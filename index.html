@@ -11,7 +11,7 @@
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
 <link rel="stylesheet" href="./web/style.css?v=16">
-<script type="module" src="./web/app.js?v=10"></script>
+<script type="module" src="./web/app.js?v=11"></script>
 </head>
 <body>
 <header class="top">
@@ -31,11 +31,17 @@
 </header>
 <main id="app" tabindex="-1"></main>
 <nav class="tabs" aria-label="주 메뉴" hidden>
-  <div class="tabs-inner">
-    <a href="#home"><span class="tab-icon"><span class="icon" data-icon="home" aria-hidden="true"></span></span>홈</a>
-    <a href="#bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>주보</a>
-    <a href="#worship"><span class="tab-icon"><span class="icon" data-icon="worship" aria-hidden="true"></span></span>예배</a>
-    <a href="#devotion"><span class="tab-icon"><span class="icon" data-icon="word" aria-hidden="true"></span></span>말씀</a>
+  <div class="tabs-inner" data-member-tabs>
+    <a href="#home" data-tab="home"><span class="tab-icon"><span class="icon" data-icon="home" aria-hidden="true"></span></span>홈</a>
+    <a href="#bulletin" data-tab="bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>주보</a>
+    <a href="#worship" data-tab="worship"><span class="tab-icon"><span class="icon" data-icon="worship" aria-hidden="true"></span></span>예배</a>
+    <a href="#devotion" data-tab="devotion"><span class="tab-icon"><span class="icon" data-icon="word" aria-hidden="true"></span></span>말씀</a>
+  </div>
+  <div class="tabs-inner" data-admin-tabs hidden>
+    <a href="#home" data-tab="home"><span class="tab-icon"><span class="icon" data-icon="home" aria-hidden="true"></span></span>홈</a>
+    <a href="#bulletin/import" data-tab="bulletin"><span class="tab-icon"><span class="icon" data-icon="bulletin" aria-hidden="true"></span></span>주보 관리</a>
+    <a href="#devotion/edit" data-tab="devotion"><span class="tab-icon"><span class="icon" data-icon="word" aria-hidden="true"></span></span>말씀 관리</a>
+    <a href="#settings" data-tab="settings"><span class="tab-icon"><span class="icon" data-icon="settings" aria-hidden="true"></span></span>설정</a>
   </div>
 </nav>
 <template id="entry">

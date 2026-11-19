@@ -11,7 +11,8 @@ const loginLink = document.querySelector('.login-link');
 const adminIndicator = document.querySelector('.admin-indicator');
 const settingsLink = document.querySelector('.settings-link');
 const tabs = document.querySelector('.tabs');
-const churchTabs = new Map([...tabs.querySelectorAll('a')].map(link => [link.hash.slice(1), link]));
+const memberTabs = tabs.querySelector('[data-member-tabs]');
+const adminTabs = tabs.querySelector('[data-admin-tabs]');
 const adminEntryCode = '002432';
 const adminPreviewKey = 'adminPreviewOpen';
 let utterance;
@@ -224,8 +225,13 @@ function render() {
   else settingsLink.removeAttribute('aria-current');
   const activeTab = page === 'worship-import' || (page === 'read' && readOrigin === 'bulletin') ? 'bulletin'
     : ['search', 'read', 'word-editor'].includes(page) ? 'devotion' : page;
-  for (const [name, link] of churchTabs) {
-    if (name === activeTab) link.setAttribute('aria-current', 'page');
+  const activeTabs = adminPreviewOpen ? adminTabs : memberTabs;
+  const activeSection = adminPreviewOpen && activeTab === 'worship' ? 'bulletin' : activeTab;
+  memberTabs.hidden = adminPreviewOpen;
+  adminTabs.hidden = !adminPreviewOpen;
+  tabs.setAttribute('aria-label', adminPreviewOpen ? '관리자 메뉴' : '주 메뉴');
+  for (const link of tabs.querySelectorAll('[data-tab]')) {
+    if (link.parentElement === activeTabs && link.dataset.tab === activeSection) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
