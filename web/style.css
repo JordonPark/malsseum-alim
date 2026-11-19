@@ -148,6 +148,7 @@ main { padding: 26px 22px 35px; }
 }
 
 .church-heading h1 { font-size: 2rem; letter-spacing: -.055em; }
+[data-church-name] { overflow-wrap: anywhere; }
 .church-example {
   margin: 0;
   padding: 4px 10px;
@@ -860,6 +861,7 @@ input, textarea {
 .content-fields label input, .content-fields label textarea { margin-top: 4px; font-weight: 400; }
 .content-fields textarea { display: block; resize: vertical; }
 .content-fields input[aria-invalid="true"] { border-color: #9b2f20; }
+#church-info-form .entry-hint { margin: 10px 0 16px; }
 
 .welcome { max-width: 410px; margin: 0 auto; }
 .entry-card {

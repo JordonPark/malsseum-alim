@@ -10,8 +10,8 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=17">
-<script type="module" src="./web/app.js?v=11"></script>
+<link rel="stylesheet" href="./web/style.css?v=18">
+<script type="module" src="./web/app.js?v=12"></script>
 </head>
 <body>
 <header class="top">
@@ -81,7 +81,7 @@
 <template id="home">
   <div class="page-heading church-heading">
     <div>
-      <h1>늘봄교회</h1>
+      <h1 data-church-name></h1>
       <p class="church-denomination" hidden></p>
     </div>
     <p class="church-example">예시 교회</p>
@@ -125,12 +125,12 @@
   <header class="page-heading church-detail-heading">
     <h1>이번 주 주보</h1>
     <div class="church-detail-meta">
-      <p>늘봄교회</p>
+      <p data-church-name></p>
       <span class="sample-label">예시 주보</span>
     </div>
   </header>
   <a class="button secondary ocr-action" href="#bulletin/import" data-admin-action hidden><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span>주보 가져오기·편집</a>
-  <article class="bulletin" aria-label="늘봄교회 주보">
+  <article class="bulletin">
     <section class="service-card" aria-labelledby="bulletin-service-title">
       <div>
         <h2 id="bulletin-service-title"><span class="icon" data-icon="worship" aria-hidden="true"></span>주일예배</h2>
@@ -189,7 +189,7 @@
   <header class="page-heading church-detail-heading">
     <h1>예배 안내</h1>
     <div class="church-detail-meta">
-      <p>늘봄교회</p>
+      <p data-church-name></p>
       <span class="sample-label">예시 일정</span>
     </div>
   </header>
@@ -273,7 +273,7 @@
   <header class="page-heading church-detail-heading">
     <h1>이번 주 말씀</h1>
     <div class="church-detail-meta">
-      <p>늘봄교회</p>
+      <p data-church-name></p>
       <span class="sample-label">예시 말씀</span>
     </div>
   </header>
@@ -361,6 +361,11 @@
       <span class="menu-text"><strong>관리자 입장</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
+    <a href="#settings/church" class="menu-row" data-admin-action hidden>
+      <span class="menu-icon green"><span class="icon" data-icon="home" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>교회 정보</strong><small data-church-name></small></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </a>
     <a href="#bulletin/import" class="menu-row" data-admin-action hidden>
       <span class="menu-icon blue"><span class="icon" data-icon="bulletin-edit" aria-hidden="true"></span></span>
       <span class="menu-text"><strong>주보 가져오기·편집</strong></span>
@@ -377,6 +382,17 @@
       <span class="chevron" aria-hidden="true"></span>
     </button>
   </div>
+</template>
+<template id="church-settings">
+  <a class="back" href="#settings">설정으로 돌아가기</a>
+  <header class="page-heading"><h1>교회 정보</h1></header>
+  <form id="church-info-form" class="paper content-fields" novalidate>
+    <label for="church-name">교회 이름</label>
+    <input id="church-name" name="churchName" type="text" maxlength="80" required aria-describedby="church-name-note church-name-error">
+    <p id="church-name-note" class="entry-hint">저장한 이름은 이 탭의 관리자 미리보기에 적용돼요.</p>
+    <p id="church-name-error" class="entry-error" role="alert" hidden></p>
+    <button type="submit" class="button primary entry-button">교회 이름 저장</button>
+  </form>
 </template>
 <div id="status" role="status" class="status"></div>
 </body>

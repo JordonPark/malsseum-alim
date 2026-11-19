@@ -15,11 +15,15 @@ const memberTabs = tabs.querySelector('[data-member-tabs]');
 const adminTabs = tabs.querySelector('[data-admin-tabs]');
 const adminEntryCode = '002432';
 const adminPreviewKey = 'adminPreviewOpen';
+const churchNameKey = 'churchNamePreview';
+const exampleChurchName = '늘봄교회';
 let utterance;
 let adminPreviewOpen = false;
+let churchNamePreview = '';
 
 try { document.documentElement.classList.toggle('large', localStorage.getItem('largeText') === 'true'); } catch {}
 try { adminPreviewOpen = sessionStorage.getItem(adminPreviewKey) === 'true'; } catch {}
+try { churchNamePreview = sessionStorage.getItem(churchNameKey)?.trim() || ''; } catch {}
 
 function setAdminPreview(open) {
   adminPreviewOpen = open;
@@ -51,6 +55,31 @@ function setupSettings(fromEntry) {
     church.querySelector('strong').textContent = '교회 찾기';
     church.querySelector('small').remove();
   }
+}
+
+function setupChurchSettings(currentName) {
+  const form = app.querySelector('#church-info-form');
+  const input = form.elements.churchName;
+  const error = form.querySelector('#church-name-error');
+  input.value = currentName;
+  input.oninput = () => {
+    input.removeAttribute('aria-invalid');
+    error.hidden = true;
+  };
+  form.onsubmit = event => {
+    event.preventDefault();
+    const name = input.value.trim();
+    if (!name || name.length > input.maxLength) {
+      input.setAttribute('aria-invalid', 'true');
+      error.textContent = name ? '교회 이름을 80자 이하로 입력해 주세요.' : '교회 이름을 입력해 주세요.';
+      error.hidden = false;
+      input.focus();
+      return;
+    }
+    churchNamePreview = name;
+    try { sessionStorage.setItem(churchNameKey, name); } catch {}
+    location.hash = 'home';
+  };
 }
 
 function setListenState(playing) {
@@ -209,6 +238,9 @@ function render() {
   } else if (route === 'devotion' && detail === 'edit') {
     page = adminPreviewOpen ? 'word-editor' : 'devotion';
     if (!adminPreviewOpen) history.replaceState(null, '', '#devotion');
+  } else if (route === 'settings' && detail === 'church') {
+    page = adminPreviewOpen ? 'church-settings' : 'settings';
+    if (!adminPreviewOpen) history.replaceState(null, '', '#settings');
   } else {
     page = reference ? 'read' : route === 'read' ? 'search'
       : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
@@ -221,9 +253,10 @@ function render() {
   adminIndicator.hidden = !adminPreviewOpen || tabs.hidden;
   settingsLink.hidden = page === 'login';
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
-  if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');
+  if (page === 'settings' || page === 'church-settings') settingsLink.setAttribute('aria-current', 'page');
   else settingsLink.removeAttribute('aria-current');
-  const activeTab = page === 'worship-import' || (page === 'read' && readOrigin === 'bulletin') ? 'bulletin'
+  const activeTab = page === 'church-settings' ? 'settings'
+    : page === 'worship-import' || (page === 'read' && readOrigin === 'bulletin') ? 'bulletin'
     : ['search', 'read', 'word-editor'].includes(page) ? 'devotion' : page;
   const activeTabs = adminPreviewOpen ? adminTabs : memberTabs;
   const activeSection = adminPreviewOpen && activeTab === 'worship' ? 'bulletin' : activeTab;
@@ -236,6 +269,9 @@ function render() {
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
   renderChurchBranding();
+  const churchName = (adminPreviewOpen && churchNamePreview) || exampleChurchName;
+  app.querySelectorAll('[data-church-name]').forEach(label => { label.textContent = churchName; });
+  app.querySelector('.bulletin')?.setAttribute('aria-label', churchName + ' 주보');
   if (['home', 'bulletin', 'devotion'].includes(page)) renderChurchContent(app, page, adminPreviewOpen);
   if (adminPreviewOpen && !fromEntry) {
     app.querySelectorAll('[data-admin-action]').forEach(link => { link.hidden = false; });
@@ -262,6 +298,7 @@ function render() {
   if (page === 'search') setupSearch();
   if (page === 'read') setupReader(reference, readOrigin);
   if (page === 'settings') setupSettings(fromEntry);
+  if (page === 'church-settings') setupChurchSettings(churchName);
   if (page === 'login' && !fromEntry) {
     const back = app.querySelector('[data-admin-back]');
     back.href = '#home';
