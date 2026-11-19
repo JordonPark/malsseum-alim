@@ -8,7 +8,7 @@
   --green: #225846;
   --sage: #eef5f1;
   --shell-width: 600px;
-  --tab-height: 5rem;
+  --tab-height: max(60px, 3.4rem);
   --bottom-inset: env(safe-area-inset-bottom, 0px);
   font: 100%/1.5 "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", system-ui, sans-serif;
   background: #eaf0ea;
@@ -399,18 +399,19 @@ main { padding: 26px 22px 35px; }
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   min-height: calc(var(--tab-height) - 1px);
   color: var(--muted);
   text-align: center;
   text-decoration: none;
   font-weight: 650;
   font-size: .86rem;
+  line-height: 1.15;
 }
 
 .tab-icon {
-  height: 1.95rem;
-  width: 3.1rem;
+  height: 1.65rem;
+  width: 2.8rem;
   max-width: 100%;
   border-radius: 30px;
   display: grid;
