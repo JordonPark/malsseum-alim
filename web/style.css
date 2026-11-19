@@ -109,6 +109,15 @@ body {
 
 .settings-link { width: 44px; }
 .settings-link[aria-current] { background: var(--sage); color: var(--green); }
+.admin-indicator {
+  padding: 5px 9px;
+  border-radius: 10px;
+  background: var(--sage);
+  color: var(--green);
+  font-size: .82rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
 
 main { padding: 26px 22px 35px; }
 .has-tabs main { padding-bottom: calc(var(--tab-height) + var(--bottom-inset) + 30px); }
@@ -800,6 +809,26 @@ input {
 .chapel-art { display: block; width: min(100%, 168px); height: auto; margin: 0 auto 12px; }
 .entry-card h1 { text-align: center; font-size: 1.6rem; }
 .entry-description { margin: 8px 0 19px; color: var(--muted); text-align: center; }
+.code-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 8px;
+}
+.code-label label { margin: 0; }
+.code-keyboard {
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--green);
+  font-size: .87rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.code-keyboard[aria-pressed="true"] { background: var(--sage); }
 [data-code-form] input {
   text-align: center;
   font-size: 1.3rem;
@@ -814,7 +843,7 @@ input {
 [data-code-form] input[aria-invalid="true"] { border-color: #9b2f20; }
 .entry-button { width: 100%; }
 #login-heading { margin-bottom: 18px; }
-.admin-enter, .admin-leave { margin-top: 12px; }
+.admin-enter { margin-top: 12px; }
 .sample-link {
   display: flex;
   justify-content: center;

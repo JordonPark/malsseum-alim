@@ -5,6 +5,7 @@ const brandIcon = brand.querySelector('.brand-icon');
 const churchLogo = brand.querySelector('.church-logo');
 const denominationBadge = brand.querySelector('.denomination-badge');
 const loginLink = document.querySelector('.login-link');
+const adminIndicator = document.querySelector('.admin-indicator');
 const settingsLink = document.querySelector('.settings-link');
 const tabs = document.querySelector('.tabs');
 const churchTabs = new Map([...tabs.querySelectorAll('a')].map(link => [link.hash.slice(1), link]));
@@ -28,7 +29,7 @@ function setAdminPreview(open) {
     if (open) sessionStorage.setItem(adminPreviewKey, 'true');
     else sessionStorage.removeItem(adminPreviewKey);
   } catch {}
-  location.hash = open ? 'admin' : 'entry';
+  location.hash = open ? 'home' : 'entry';
 }
 
 function setupSettings(fromEntry) {
@@ -40,8 +41,13 @@ function setupSettings(fromEntry) {
     size.setAttribute('aria-pressed', large);
     try { localStorage.setItem('largeText', large); } catch {}
   };
+  const adminLogin = app.querySelector('[data-admin-login]');
+  const adminLeave = app.querySelector('[data-admin-leave]');
+  adminLogin.hidden = adminPreviewOpen;
+  adminLeave.hidden = !adminPreviewOpen;
+  adminLeave.onclick = () => setAdminPreview(false);
   if (fromEntry) {
-    app.querySelector('[data-admin-login]').href = '#login';
+    adminLogin.href = '#login';
     const church = app.querySelector('a[href="#entry"]');
     church.querySelector('strong').textContent = '교회 찾기';
     church.querySelector('small').remove();
@@ -166,6 +172,13 @@ function setupCodeEntry(adminOnly) {
   const form = app.querySelector('[data-code-form]');
   const input = form.elements.code;
   const error = form.querySelector('[role="alert"]');
+  const keyboard = form.querySelector('[data-code-keyboard]');
+  keyboard?.addEventListener('click', () => {
+    const letters = input.inputMode === 'numeric';
+    input.inputMode = letters ? 'text' : 'numeric';
+    keyboard.setAttribute('aria-pressed', String(letters));
+    input.focus();
+  });
   input.addEventListener('input', () => {
     error.hidden = true;
     input.removeAttribute('aria-invalid');
@@ -177,10 +190,10 @@ function setupCodeEntry(adminOnly) {
       setAdminPreview(true);
       return;
     }
-    const validCode = /^[0-9]{6}$/.test(code);
+    const validCode = /^([0-9]{6}|[A-Za-z][0-9]{5})$/.test(code);
     const invalid = adminOnly || !validCode;
-    const codeLabel = adminOnly ? '관리자 코드' : '교회 코드';
-    error.textContent = invalid ? `${codeLabel} 숫자 6자리를 다시 확인해 주세요.` : '교회 코드 조회를 준비 중이에요.';
+    error.textContent = adminOnly ? '관리자 코드 숫자 6자리를 다시 확인해 주세요.'
+      : invalid ? '교회 코드 6자리를 다시 확인해 주세요.' : '교회 코드 조회를 준비 중이에요.';
     error.hidden = false;
     if (invalid) {
       input.setAttribute('aria-invalid', 'true');
@@ -194,23 +207,20 @@ function render() {
   status.textContent = '';
   const [route, detail, verse] = location.hash.slice(1).split('/');
   let page;
-  if (route === 'admin' && !adminPreviewOpen) {
-    history.replaceState(null, '', '#login');
-    page = 'login';
-  } else if (route === 'login' && adminPreviewOpen) {
-    history.replaceState(null, '', '#admin');
-    page = 'admin';
+  if (route === 'admin' || (route === 'login' && adminPreviewOpen)) {
+    page = adminPreviewOpen ? 'home' : 'login';
+    history.replaceState(null, '', '#' + page);
   } else {
     page = route === 'read' && Object.hasOwn(chapters, detail) ? 'read'
-      : ['home', 'entry', 'login', 'admin', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
+      : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
   }
   const fromEntry = page === 'entry' || (page === 'settings' && detail === 'entry') || (page === 'login' && detail !== 'home');
-  const adminPage = page === 'login' || page === 'admin';
-  tabs.hidden = fromEntry || adminPage;
+  tabs.hidden = fromEntry || page === 'login';
   document.body.classList.toggle('has-tabs', !tabs.hidden);
-  brand.href = page === 'admin' ? '#admin' : fromEntry ? '#entry' : '#home';
+  brand.href = fromEntry ? '#entry' : '#home';
   loginLink.hidden = page !== 'entry';
-  settingsLink.hidden = adminPage;
+  adminIndicator.hidden = !adminPreviewOpen || tabs.hidden;
+  settingsLink.hidden = page === 'login';
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
   if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');
   else settingsLink.removeAttribute('aria-current');
@@ -222,7 +232,6 @@ function render() {
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
   renderChurchBranding();
   if (page === 'entry' || page === 'login') setupCodeEntry(page === 'login');
-  if (page === 'admin') app.querySelector('[data-admin-leave]').onclick = () => setAdminPreview(false);
   if (page === 'search') setupSearch();
   if (page === 'read') setupReader(Number(detail), Number(verse));
   if (page === 'settings') setupSettings(fromEntry);

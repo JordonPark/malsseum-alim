@@ -10,8 +10,8 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=13">
-<script defer src="./web/app.js?v=7"></script>
+<link rel="stylesheet" href="./web/style.css?v=14">
+<script defer src="./web/app.js?v=8"></script>
 </head>
 <body>
 <header class="top">
@@ -24,6 +24,7 @@
     </a>
     <div class="header-actions">
       <a class="login-link" href="#login" hidden>관리자 입장</a>
+      <span class="admin-indicator" hidden>관리자</span>
       <a class="settings-link" href="#settings" aria-label="설정"><span class="icon" data-icon="settings" aria-hidden="true"></span></a>
     </div>
   </div>
@@ -44,8 +45,11 @@
       <h1 id="entry-heading">우리 교회 찾기</h1>
       <p class="entry-description">예배 일정과 이번 주 말씀을 확인하세요.</p>
       <form id="church-form" data-code-form novalidate>
-        <label for="church-code">교회 코드 6자리</label>
-        <input id="church-code" name="code" type="text" inputmode="numeric" autocomplete="off" aria-describedby="church-hint church-error">
+        <div class="code-label">
+          <label for="church-code">교회 코드 6자리</label>
+          <button type="button" class="code-keyboard" aria-pressed="false" aria-controls="church-code" data-code-keyboard>영문 입력</button>
+        </div>
+        <input id="church-code" name="code" type="text" inputmode="numeric" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="church-hint church-error">
         <p id="church-hint" class="entry-hint">주보나 교회 카톡방에서 받은 코드를 입력하세요.</p>
         <p id="church-error" class="entry-error" role="alert" hidden></p>
         <button class="button primary entry-button" type="submit">교회 찾기</button>
@@ -67,22 +71,6 @@
       <a class="sample-link" href="#entry" data-admin-back>교회 찾기로 돌아가기</a>
     </section>
   </div>
-</template>
-<template id="admin">
-  <header class="page-heading">
-    <h1>관리자 홈</h1>
-    <p>늘봄교회 · 개발용</p>
-  </header>
-  <section class="paper" aria-labelledby="admin-preview-heading">
-    <h2 id="admin-preview-heading">성도 화면 미리보기</h2>
-    <nav class="row" aria-labelledby="admin-preview-heading">
-      <a class="button secondary" href="#home">교회 홈</a>
-      <a class="button secondary" href="#bulletin">이번 주 주보</a>
-      <a class="button secondary" href="#worship">예배 안내</a>
-      <a class="button secondary" href="#devotion">이번 주 말씀</a>
-    </nav>
-  </section>
-  <button type="button" class="button secondary entry-button admin-leave" data-admin-leave>관리자 홈 나가기</button>
 </template>
 <template id="home">
   <div class="page-heading church-heading">
@@ -289,6 +277,11 @@
       <span class="menu-text"><strong>관리자 입장</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
+    <button type="button" class="menu-row" data-admin-leave hidden>
+      <span class="menu-icon gold"><span class="icon" data-icon="swap" aria-hidden="true"></span></span>
+      <span class="menu-text"><strong>관리자 모드 종료</strong></span>
+      <span class="chevron" aria-hidden="true"></span>
+    </button>
   </div>
 </template>
 <div id="status" role="status" class="status"></div>
