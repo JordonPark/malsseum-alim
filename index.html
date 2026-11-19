@@ -10,8 +10,8 @@
 <title>오늘의 교회</title>
 <link rel="icon" href="./web/icon.png">
 <link rel="apple-touch-icon" href="./web/icon.png">
-<link rel="stylesheet" href="./web/style.css?v=12">
-<script defer src="./web/app.js?v=6"></script>
+<link rel="stylesheet" href="./web/style.css?v=13">
+<script defer src="./web/app.js?v=7"></script>
 </head>
 <body>
 <header class="top">
@@ -23,7 +23,7 @@
       <span class="brand-name">오늘의 교회</span>
     </a>
     <div class="header-actions">
-      <a class="login-link" href="#login" hidden>로그인하기</a>
+      <a class="login-link" href="#login" hidden>관리자 입장</a>
       <a class="settings-link" href="#settings" aria-label="설정"><span class="icon" data-icon="settings" aria-hidden="true"></span></a>
     </div>
   </div>
@@ -43,7 +43,7 @@
       <img class="chapel-art" src="./web/chapel.webp" alt="" fetchpriority="high">
       <h1 id="entry-heading">우리 교회 찾기</h1>
       <p class="entry-description">예배 일정과 이번 주 말씀을 확인하세요.</p>
-      <form id="church-form" novalidate>
+      <form id="church-form" data-code-form novalidate>
         <label for="church-code">교회 코드 6자리</label>
         <input id="church-code" name="code" type="text" inputmode="numeric" autocomplete="off" aria-describedby="church-hint church-error">
         <p id="church-hint" class="entry-hint">주보나 교회 카톡방에서 받은 코드를 입력하세요.</p>
@@ -56,12 +56,33 @@
 </template>
 <template id="login">
   <div class="welcome">
-    <section class="entry-card login-card" aria-labelledby="login-heading">
-      <h1 id="login-heading">관리자 로그인</h1>
-      <p class="entry-description">카카오·Google 계정 연결을 준비 중이에요.</p>
-      <a class="button secondary entry-button" href="#entry">교회 찾기로 돌아가기</a>
+    <section class="entry-card" aria-labelledby="login-heading">
+      <h1 id="login-heading">관리자 입장</h1>
+      <form data-code-form novalidate>
+        <label for="admin-code">관리자 코드 6자리</label>
+        <input id="admin-code" name="code" type="text" inputmode="numeric" autocomplete="off" aria-describedby="admin-code-error">
+        <p id="admin-code-error" class="entry-error" role="alert" hidden></p>
+        <button class="button primary entry-button admin-enter" type="submit">입장하기</button>
+      </form>
+      <a class="sample-link" href="#entry" data-admin-back>교회 찾기로 돌아가기</a>
     </section>
   </div>
+</template>
+<template id="admin">
+  <header class="page-heading">
+    <h1>관리자 홈</h1>
+    <p>늘봄교회 · 개발용</p>
+  </header>
+  <section class="paper" aria-labelledby="admin-preview-heading">
+    <h2 id="admin-preview-heading">성도 화면 미리보기</h2>
+    <nav class="row" aria-labelledby="admin-preview-heading">
+      <a class="button secondary" href="#home">교회 홈</a>
+      <a class="button secondary" href="#bulletin">이번 주 주보</a>
+      <a class="button secondary" href="#worship">예배 안내</a>
+      <a class="button secondary" href="#devotion">이번 주 말씀</a>
+    </nav>
+  </section>
+  <button type="button" class="button secondary entry-button admin-leave" data-admin-leave>관리자 홈 나가기</button>
 </template>
 <template id="home">
   <div class="page-heading church-heading">
@@ -265,7 +286,7 @@
     </a>
     <a href="#login/home" class="menu-row" data-admin-login>
       <span class="menu-icon gold"><span class="icon" data-icon="settings" aria-hidden="true"></span></span>
-      <span class="menu-text"><strong>관리자 로그인</strong></span>
+      <span class="menu-text"><strong>관리자 입장</strong></span>
       <span class="chevron" aria-hidden="true"></span>
     </a>
   </div>

@@ -8,14 +8,28 @@ const loginLink = document.querySelector('.login-link');
 const settingsLink = document.querySelector('.settings-link');
 const tabs = document.querySelector('.tabs');
 const churchTabs = new Map([...tabs.querySelectorAll('a')].map(link => [link.hash.slice(1), link]));
+const adminEntryCode = '002432';
+const adminPreviewKey = 'adminPreviewOpen';
 const chapters = {
   13: [[1, '13장 본문이 여기에 표시됩니다.']],
   14: [[26, '앞 절의 본문이 여기에 표시됩니다.'], [27, '선택한 구절의 본문이 여기에 표시됩니다.'], [28, '다음 절의 본문이 여기에 표시됩니다.']],
   15: [[1, '15장 본문이 여기에 표시됩니다.']],
 };
 let utterance;
+let adminPreviewOpen = false;
 
 try { document.documentElement.classList.toggle('large', localStorage.getItem('largeText') === 'true'); } catch {}
+try { adminPreviewOpen = sessionStorage.getItem(adminPreviewKey) === 'true'; } catch {}
+
+function setAdminPreview(open) {
+  adminPreviewOpen = open;
+  // This tab preference controls navigation to a public demo.
+  try {
+    if (open) sessionStorage.setItem(adminPreviewKey, 'true');
+    else sessionStorage.removeItem(adminPreviewKey);
+  } catch {}
+  location.hash = open ? 'admin' : 'entry';
+}
 
 function setupSettings(fromEntry) {
   const size = document.querySelector('#size');
@@ -148,10 +162,10 @@ function renderChurchBranding() {
   showAvailableMark();
 }
 
-function setupEntry() {
-  const form = document.querySelector('#church-form');
-  const input = document.querySelector('#church-code');
-  const error = document.querySelector('#church-error');
+function setupCodeEntry(adminOnly) {
+  const form = app.querySelector('[data-code-form]');
+  const input = form.elements.code;
+  const error = form.querySelector('[role="alert"]');
   input.addEventListener('input', () => {
     error.hidden = true;
     input.removeAttribute('aria-invalid');
@@ -159,15 +173,16 @@ function setupEntry() {
   form.addEventListener('submit', event => {
     event.preventDefault();
     const code = input.value.replace(/[\s-]/g, '');
-    // This public shortcut opens the same screen as the login link.
-    if (code === '002432') {
-      location.hash = loginLink.hash;
+    if (code === adminEntryCode) {
+      setAdminPreview(true);
       return;
     }
     const validCode = /^[0-9]{6}$/.test(code);
-    error.textContent = validCode ? '교회 코드 조회를 준비 중이에요.' : '교회 코드 숫자 6자리를 다시 확인해 주세요.';
+    const invalid = adminOnly || !validCode;
+    const codeLabel = adminOnly ? '관리자 코드' : '교회 코드';
+    error.textContent = invalid ? `${codeLabel} 숫자 6자리를 다시 확인해 주세요.` : '교회 코드 조회를 준비 중이에요.';
     error.hidden = false;
-    if (!validCode) {
+    if (invalid) {
       input.setAttribute('aria-invalid', 'true');
       input.focus();
     }
@@ -178,14 +193,24 @@ function render() {
   stopSpeech();
   status.textContent = '';
   const [route, detail, verse] = location.hash.slice(1).split('/');
-  const page = route === 'read' && Object.hasOwn(chapters, detail) ? 'read'
-    : ['home', 'entry', 'login', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
+  let page;
+  if (route === 'admin' && !adminPreviewOpen) {
+    history.replaceState(null, '', '#login');
+    page = 'login';
+  } else if (route === 'login' && adminPreviewOpen) {
+    history.replaceState(null, '', '#admin');
+    page = 'admin';
+  } else {
+    page = route === 'read' && Object.hasOwn(chapters, detail) ? 'read'
+      : ['home', 'entry', 'login', 'admin', 'devotion', 'search', 'bulletin', 'worship', 'settings'].includes(route) ? route : 'entry';
+  }
   const fromEntry = page === 'entry' || (page === 'settings' && detail === 'entry') || (page === 'login' && detail !== 'home');
-  tabs.hidden = fromEntry || page === 'login';
+  const adminPage = page === 'login' || page === 'admin';
+  tabs.hidden = fromEntry || adminPage;
   document.body.classList.toggle('has-tabs', !tabs.hidden);
-  brand.href = fromEntry ? '#entry' : '#home';
+  brand.href = page === 'admin' ? '#admin' : fromEntry ? '#entry' : '#home';
   loginLink.hidden = page !== 'entry';
-  settingsLink.hidden = page === 'login';
+  settingsLink.hidden = adminPage;
   settingsLink.href = fromEntry ? '#settings/entry' : '#settings';
   if (page === 'settings') settingsLink.setAttribute('aria-current', 'page');
   else settingsLink.removeAttribute('aria-current');
@@ -196,12 +221,13 @@ function render() {
   }
   app.replaceChildren(document.getElementById(page).content.cloneNode(true));
   renderChurchBranding();
-  if (page === 'entry') setupEntry();
+  if (page === 'entry' || page === 'login') setupCodeEntry(page === 'login');
+  if (page === 'admin') app.querySelector('[data-admin-leave]').onclick = () => setAdminPreview(false);
   if (page === 'search') setupSearch();
   if (page === 'read') setupReader(Number(detail), Number(verse));
   if (page === 'settings') setupSettings(fromEntry);
   if (page === 'login' && !fromEntry) {
-    const back = app.querySelector('a');
+    const back = app.querySelector('[data-admin-back]');
     back.href = '#home';
     back.textContent = '교회 홈으로 돌아가기';
   }

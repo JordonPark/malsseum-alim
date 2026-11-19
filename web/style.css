@@ -800,7 +800,7 @@ input {
 .chapel-art { display: block; width: min(100%, 168px); height: auto; margin: 0 auto 12px; }
 .entry-card h1 { text-align: center; font-size: 1.6rem; }
 .entry-description { margin: 8px 0 19px; color: var(--muted); text-align: center; }
-#church-code {
+[data-code-form] input {
   text-align: center;
   font-size: 1.3rem;
   letter-spacing: .12em;
@@ -811,8 +811,10 @@ input {
 .entry-hint, .entry-error { margin: 8px 0 13px; font-size: .87rem; }
 .entry-hint { color: var(--muted); }
 .entry-error { color: #9b2f20; font-weight: 700; }
-#church-code[aria-invalid="true"] { border-color: #9b2f20; }
+[data-code-form] input[aria-invalid="true"] { border-color: #9b2f20; }
 .entry-button { width: 100%; }
+#login-heading { margin-bottom: 18px; }
+.admin-enter, .admin-leave { margin-top: 12px; }
 .sample-link {
   display: flex;
   justify-content: center;
